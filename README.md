@@ -18,7 +18,7 @@ After installing Flutter, use Terminal or PowerShell and change directories to t
 
 ```$ cd dx-mobile ```
 
-Then, launch any emulator. See the Flutter page for instructions on how to set up your emulators. As an example, if I have an emulator called iphonex, type this in your terminal:
+Then, launch any emulator. See the Flutter page for instructions on how to set up your emulators. As an example, if you have an emulator called iphonex, type this in your terminal:
 
 ```$ flutter emulators --launch iphonex ```
 
