@@ -1,4 +1,4 @@
-# dx-mobile
+# dx_mobile
 
 A new Flutter project.
 
@@ -14,9 +14,9 @@ You'll need:
     - an emulator (Android or iOS)
     - this repo
 
-After installing Flutter, use Terminal or PowerShell and change directories to the dx-mobile directory you just cloned.
+After installing Flutter, use Terminal or PowerShell and change directories to the dx_mobile directory you just cloned.
 
-```$ cd dx-mobile ```
+```$ cd dx_mobile ```
 
 Then, launch any emulator. See the Flutter page for instructions on how to set up your emulators. As an example, if I have an emulator called iphonex, type this in your terminal:
 

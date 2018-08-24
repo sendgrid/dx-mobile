@@ -6,6 +6,7 @@
 
 import 'dart:convert';
 import 'pullrequest.dart';
+import 'issue.dart';
 import 'repository.dart';
 import 'user.dart';
 
@@ -37,8 +38,8 @@ List<PullRequest> parseOpenPullRequestReviews(String resBody) {
 
 List<PullRequest> parsePullRequests(String resBody) {
   List jsonRes = json.decode(resBody)['data']['organization']['repository']['pullRequests']['nodes'];
-  print('json');
-  print(jsonRes.toString());
+  // print('json');
+  // print(jsonRes.toString());
 
   Map repoInfo = json.decode(resBody)['data']['organization']['repository'];
   Repository repo = Repository(repoInfo['name'], repoInfo['url'], repoInfo['stargazers']['totalCount']);
@@ -51,4 +52,19 @@ List<PullRequest> parsePullRequests(String resBody) {
 
   return prs;
 
+}
+
+List<Issue> parseIssues(String resBody) {
+  List jsonRes = json.decode(resBody)['data']['organization']['repository']['issues']['nodes'];
+
+  Map repoInfo = json.decode(resBody)['data']['organization']['repository'];
+  Repository repo = Repository(repoInfo['name'], repoInfo['url'], repoInfo['stargazers']['totalCount']);
+
+  List<Issue> issues = [];
+  for (var i = 0; i < jsonRes.length; i++){
+    issues.add(Issue(jsonRes[i]['title'], jsonRes[i]['id'], jsonRes[i]['url'], 
+    repo, jsonRes[i]['author']['login'], jsonRes[i]['state']));
+  }
+  print (issues.toString());
+  return issues;
 }

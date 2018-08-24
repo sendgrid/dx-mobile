@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import 'parsers.dart';
 import 'pullrequest.dart';
+import 'issue.dart';
 import 'token.dart';
 import 'user.dart';
 
@@ -120,7 +121,7 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
       query {
         organization(login: "$owner") {
           repository(name: "$repoName") {
-            pullRequests(last: 100, states: [OPEN]) {
+            pullRequests(last: 100, states: [OPEN], orderBy: {field: CREATED_AT, direction: DESC}) {
               nodes {
                 author {
                   login
@@ -140,7 +141,7 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
       }
   ''';
   final result = await _query(query);
-  print(result.toString());
+  // print(result.toString());
   return parsePullRequests(result);
   
   // query for a user and specific repo
@@ -159,6 +160,36 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
   //   }
   // ''';
 }
+
+Future<List<Issue>> getIssues(String owner, String repoName) async {
+  final query = '''
+      query {
+        organization(login: "$owner") {
+          repository(name: "$repoName") {
+            issues(last: 100, states: [OPEN], orderBy: {field: CREATED_AT, direction: DESC}) {
+              nodes {
+                author {
+                  login
+                }
+                title
+                url
+                id
+                state
+              }
+            }
+            name
+            url
+            stargazers(first: 1) {
+              totalCount
+            }
+          }
+        }
+      }
+  ''';
+  final result = await _query(query);
+  return parseIssues(result);
+}
+
 
 /// Sends a GraphQL query to Github and returns raw response
 Future<String> _query(String query) async {

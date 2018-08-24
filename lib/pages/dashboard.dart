@@ -15,7 +15,7 @@ class Dashboard extends StatelessWidget {
       (
         elevation: 2.0,
         backgroundColor: Colors.white,
-        title: Text('dx-mobile!', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0)),
+        title: Text('DXGo!', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 30.0)),
       ),
       body: StaggeredGridView.count(
         crossAxisCount: 2,
@@ -124,6 +124,9 @@ class Dashboard extends StatelessWidget {
                 ]
               ),
             ),
+            onTap: () {
+              Navigator.pushNamed(context, '/issues');
+            }            
           ),
           _buildTile(
             Padding

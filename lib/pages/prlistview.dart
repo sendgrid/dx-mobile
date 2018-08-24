@@ -44,8 +44,8 @@ class PRList extends StatelessWidget {
     return ListView(
       children: prs
           .map((pullRequest) => ListTile(
-                title: Text(pullRequest.repo.name),
-                subtitle: Text(pullRequest.title),
+                title: Text(pullRequest.title),
+                subtitle: Text(pullRequest.author),
                 onTap: () {
                   
                 },

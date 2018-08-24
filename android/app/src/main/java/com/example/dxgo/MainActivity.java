@@ -1,4 +1,4 @@
-package com.example.dx-mobile;
+package com.example.dx_mobile;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
