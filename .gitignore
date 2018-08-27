@@ -14,4 +14,4 @@ pubspec.lock
 
 .history
 
-./lib/github/token.dart
+token.dart
