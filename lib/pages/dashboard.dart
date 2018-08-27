@@ -103,15 +103,13 @@ class DashboardState extends State<Dashboard> {
                                 .prList), // grabs user whose auth token is in token.dart
                             builder: _buildPRText)
                       ]),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PRListView(
-                              widget.owner, widget.repoName, widget.prList)));
-                }
-            ),
+                ), onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PRListView(
+                          widget.owner, widget.repoName, widget.prList)));
+            }),
             _buildTile(
                 Padding(
                   padding: const EdgeInsets.all(24.0),
@@ -119,23 +117,26 @@ class DashboardState extends State<Dashboard> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Row(children: <Widget> [
-                            SizedBox(width: 55.0,),
-                            Material(
+                        Row(children: <Widget>[
+                          SizedBox(
+                            width: 55.0,
+                          ),
+                          Material(
                               color: Colors.amber,
                               shape: CircleBorder(),
                               child: Padding(
                                 padding: EdgeInsets.all(16.0),
                                 child: Icon(Icons.notifications,
                                     color: Colors.white, size: 30.0),
-                            ))]),
+                              ))
+                        ]),
                         FutureBuilder(
                             future: _getLength(widget
                                 .issueList), // grabs user whose auth token is in token.dart
                             builder: _buildIssueText)
                       ]),
                 ), onTap: () {
-                            Navigator.push(
+              Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => IssueListView(

@@ -147,7 +147,7 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
   final result = await _query(query);
   // print(result.toString());
   return parsePullRequests(result, owner);
-  
+
   // query for a user and specific repo
   // final query = '''
   //   query {
@@ -197,12 +197,12 @@ Future<List<Issue>> getIssues(String owner, String repoName) async {
 }
 
 // query to get timeline from a specific PR of an organization's repo
-Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async{
+Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
   final query = '''
     query {
       repository(owner: "${pullRequest.repo.organization}", name: "${pullRequest.repo.name}") {
         pullRequest(number: ${pullRequest.number}) {
-          timeline(last: 10) {
+          timeline(last: 100) {
             edges {
               node {
                 ... on IssueComment {
@@ -242,9 +242,7 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async{
   ''';
 // figure this out later, how to deal with different type of results
 
-  
   final result = await _query(query);
-  //print(result);
   return parsePRTimeline(result, pullRequest);
 }
 

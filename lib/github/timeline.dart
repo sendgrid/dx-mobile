@@ -7,26 +7,39 @@ class TimelineItem {
   String url;
   String title;
   String author;
-  
-  TimelineItem({PullRequest pr, String id, String url, String title, String author});
 
-  String toString() => 'Title: $title, ID: $id, URL: $url, Pull Request: $pr, Author: $author';
+  TimelineItem(this.pr, this.id, this.url, this.title, this.author);
+
+  String toString() =>
+      'Title: $title, ID: $id, URL: $url, Pull Request: $pr, Author: $author';
 }
 
 class IssueComment extends TimelineItem {
   String body;
 
-  IssueComment(this.body, {PullRequest pr, String id, String url, String title, String author});
+  IssueComment(PullRequest pr, String id, String url, String title,
+      String author, this.body)
+      : super(pr, id, url, title, author);
+  String toString() =>
+      'Title: $title, ID: $id, URL: $url, Pull Request: $pr, Author: $author, Body: $body';
 }
 
 class Commit extends TimelineItem {
   String message;
-  
-  Commit(this.message, {PullRequest pr, String id, String url, String title, String author});
+
+  Commit(PullRequest pr, String id, String url, String title, String author,
+      this.message)
+      : super(pr, id, url, title, author);
+  String toString() =>
+      'Title: $title, ID: $id, URL: $url, Pull Request: $pr, Author: $author, Message: $message';
 }
 
-class LabeledEvent extends TimelineItem{
+class LabeledEvent extends TimelineItem {
   String labelName;
 
-  LabeledEvent(this.labelName, {PullRequest pr, String id, String url, String title, String author});
+  LabeledEvent(PullRequest pr, String id, String url, String title,
+      String author, this.labelName)
+      : super(pr, id, url, title, author);
+  String toString() =>
+      'Title: $title, ID: $id, URL: $url, Pull Request: $pr, Author: $author, Label: $labelName';
 }
