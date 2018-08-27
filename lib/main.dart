@@ -15,11 +15,22 @@ import 'pages/issuelistview.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  final Future<List<PullRequest>> prList = graphql.getPRs("sendgrid","sendgrid-go");
-  final Future<List<Issue>> issueList = graphql.getIssues("sendgrid","sendgrid-go");
+class MyApp extends StatefulWidget {
+  @override
+    State<StatefulWidget> createState() {
+      return MyAppState();
+    }
+}
+class MyAppState extends State<MyApp> {
+  //hard code for now
+  String owner = "sendgrid";
+  String repoName = "sendgrid-go";
+
+
   @override
   Widget build(BuildContext context) {
+    Future<List<PullRequest>> prList = graphql.getPRs(owner, repoName);
+    Future<List<Issue>> issueList = graphql.getIssues(owner, repoName);
     return MaterialApp(
       title: "DXGo!",
       theme: ThemeData(
@@ -27,11 +38,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         accentColor: Colors.black45
       ),
-      home: Dashboard(),
+      home: Dashboard(owner, repoName, prList, issueList),
       routes: {
-        '/prs': (BuildContext context) => PRListView(prList),
-        '/issues': (BuildContext context) => IssueListView(issueList)
+        // probably can't have routes here besides login and home dashboard
+        // because you need to update the PRList yourself
+        // '/prs': (BuildContext context) => PRListView(owner, repoName, PRList),
+        // '/issues': (BuildContext context) => IssueListView(owner, repoName, IssueList)
       }
     );
   }
 }
+
