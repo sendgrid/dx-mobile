@@ -119,3 +119,14 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
   //print(prTimeline.toString());
   return prTimeline;
 }
+
+int parseBranches(String resBody) {
+  int jsonRes = json.decode(resBody)['data']['repository']['refs']['totalCount'];
+  return jsonRes;
+}
+
+int parseReleases (String resBody) {
+  int jsonRes = json.decode(resBody)['data']['repository']['refs']['totalCount'];
+
+  return jsonRes;
+}

@@ -10,8 +10,6 @@ import 'github/issue.dart';
 
 import 'review_code.dart';
 import 'pages/dashboard.dart';
-import 'pages/prlistview.dart';
-import 'pages/issuelistview.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,13 +29,16 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     Future<List<PullRequest>> prList = graphql.getPRs(owner, repoName);
     Future<List<Issue>> issueList = graphql.getIssues(owner, repoName);
+    Future<int> numBranches = graphql.getBranches(owner, repoName);
+    Future<int> numReleases = graphql.getReleases(owner, repoName);
+    
     return MaterialApp(
         title: "DXGo!",
         theme: ThemeData(
             brightness: Brightness.light,
             primarySwatch: Colors.blue,
             accentColor: Colors.black45),
-        home: Dashboard(owner, repoName, prList, issueList),
+        home: Dashboard(owner, repoName, prList, issueList, numBranches, numReleases),
         routes: {
           // probably can't have routes here besides login and home dashboard
           // because you need to update the PRList yourself

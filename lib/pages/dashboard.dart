@@ -16,8 +16,10 @@ class Dashboard extends StatefulWidget {
   final String repoName;
   final Future<List<PullRequest>> prList;
   final Future<List<Issue>> issueList;
+  final Future<int> branches;
+  final Future<int> releases;
 
-  Dashboard(this.owner, this.repoName, this.prList, this.issueList);
+  Dashboard(this.owner, this.repoName, this.prList, this.issueList, this.branches, this.releases);
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -64,11 +66,10 @@ class DashboardState extends State<Dashboard> {
                         children: <Widget>[
                           Text('Releases',
                               style: TextStyle(color: Colors.blueAccent)),
-                          Text('25',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 34.0))
+                          FutureBuilder(
+                            future: widget.releases,
+                            builder: _buildFutureIntText
+                          ),
                         ],
                       ),
                       Material(
@@ -98,10 +99,12 @@ class DashboardState extends State<Dashboard> {
                               child: Icon(Icons.settings_applications,
                                   color: Colors.white, size: 30.0),
                             )),
+                        Padding(padding: EdgeInsets.only(bottom: 16.0)),
                         FutureBuilder(
                             future: _getLength(widget
                                 .prList), // grabs user whose auth token is in token.dart
-                            builder: _buildPRText)
+                            builder: _buildPRText),
+                        Text('Pull Requests', style: TextStyle(color: Colors.black45)),
                       ]),
                 ), onTap: () {
               Navigator.push(
@@ -117,23 +120,20 @@ class DashboardState extends State<Dashboard> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Row(children: <Widget>[
-                          SizedBox(
-                            width: 55.0,
-                          ),
-                          Material(
+                        Material(
                               color: Colors.amber,
                               shape: CircleBorder(),
                               child: Padding(
                                 padding: EdgeInsets.all(16.0),
                                 child: Icon(Icons.notifications,
                                     color: Colors.white, size: 30.0),
-                              ))
-                        ]),
+                              )),
+                        Padding(padding: EdgeInsets.only(bottom: 16.0)),
                         FutureBuilder(
                             future: _getLength(widget
                                 .issueList), // grabs user whose auth token is in token.dart
-                            builder: _buildIssueText)
+                            builder: _buildIssueText),
+                        Text('Issues', style: TextStyle(color: Colors.black45)),
                       ]),
                 ), onTap: () {
               Navigator.push(
@@ -155,11 +155,10 @@ class DashboardState extends State<Dashboard> {
                         children: <Widget>[
                           Text('Branches',
                               style: TextStyle(color: Colors.redAccent)),
-                          Text('25',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 34.0))
+                          FutureBuilder(
+                            future: widget.branches,
+                            builder: _buildFutureIntText
+                          ),
                         ],
                       ),
                       Material(
@@ -209,37 +208,19 @@ class DashboardState extends State<Dashboard> {
   }
 
   Widget _buildPRText(BuildContext context, AsyncSnapshot<int> snapshot) {
-    return Column(children: <Widget>[
-      Padding(padding: EdgeInsets.only(bottom: 16.0)),
-      Row(children: <Widget>[
-        Text("${snapshot.data}",
+    return Text("${snapshot.data}",
             style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w700,
-                fontSize: 24.0))
-      ]),
-      Row(children: <Widget>[
-        Text('Pull Requests', style: TextStyle(color: Colors.black45)),
-      ]),
-    ]);
+                fontSize: 24.0));
   }
 
   Widget _buildIssueText(BuildContext context, AsyncSnapshot<int> snapshot) {
-    return Column(children: <Widget>[
-      Padding(padding: EdgeInsets.only(bottom: 16.0)),
-      Row(children: <Widget>[
-        SizedBox(width: 85.0),
-        Text("${snapshot.data}",
+    return Text("${snapshot.data}",
             style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w700,
-                fontSize: 24.0))
-      ]),
-      Row(children: <Widget>[
-        SizedBox(width: 75.0),
-        Text('Issues', style: TextStyle(color: Colors.black45)),
-      ]),
-    ]);
+                fontSize: 24.0));
   }
 
   //gets length of future list (consider putting into a util file)
@@ -247,6 +228,14 @@ class DashboardState extends State<Dashboard> {
     // initial length of PR/Issue list
     List<dynamic> list = await futureList;
     return list.length;
+  }
+
+  Widget _buildFutureIntText(BuildContext context, AsyncSnapshot<int> snapshot) {
+    return  Text("${snapshot.data}",
+      style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w700,
+          fontSize: 34.0));
   }
 }
 

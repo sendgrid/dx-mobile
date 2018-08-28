@@ -13,8 +13,10 @@ import 'parsers.dart';
 import 'pullrequest.dart';
 import 'issue.dart';
 import 'timeline.dart';
+import 'repository.dart';
 import 'token.dart';
 import 'user.dart';
+
 
 final url = 'https://api.github.com/graphql';
 final headers = {'Authorization': 'bearer $token'};
@@ -147,22 +149,6 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
   final result = await _query(query);
   // print(result.toString());
   return parsePullRequests(result, owner);
-
-  // query for a user and specific repo
-  // final query = '''
-  //   query {
-  //     repository(owner: "$owner", name: "$repoName") {
-  //       pullRequests(first:5, states:[OPEN]) {
-  //         nodes {
-  //           author {
-  //             login
-  //           }
-  //           title
-  //         }
-  //       }
-  //     }
-  //   }
-  // ''';
 }
 
 // query to get issues for an organization's repo
@@ -202,7 +188,7 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
     query {
       repository(owner: "${pullRequest.repo.organization}", name: "${pullRequest.repo.name}") {
         pullRequest(number: ${pullRequest.number}) {
-          timeline(last: 100) {
+          timeline {
             edges {
               node {
                 ... on IssueComment {
@@ -240,10 +226,39 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
       }
     }
   ''';
-// figure this out later, how to deal with different type of results
-
   final result = await _query(query);
   return parsePRTimeline(result, pullRequest);
+}
+
+Future<int> getBranches(String owner, String repoName) async {
+  final query = '''
+    query {
+      repository(name: "$repoName", owner: "$owner") {
+        refs(last: 100 , refPrefix:"refs/heads/") {
+          totalCount
+        }
+      }
+    }
+  ''';
+
+  final result = await _query(query);
+  return parseBranches(result);
+}
+
+Future<int> getReleases(String owner, String repoName) async {
+  final query = '''
+    query {
+      repository(name: "$repoName", owner: "$owner") {
+        refs(refPrefix:"refs/tags/") {
+          totalCount
+        }
+      }
+    }
+  ''';
+
+  final result = await _query(query);
+  return parseReleases(result);
+
 }
 
 /// Sends a GraphQL query to Github and returns raw response
