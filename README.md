@@ -22,6 +22,10 @@ Then, launch any emulator. See the Flutter page for instructions on how to set u
 
 ```$ flutter emulators --launch iphonex ```
 
+After that, open the project directory up in any IDE and in the lib/github directory, create a file called token.dart and add what's below into the file. This will be used to authenticate with GitHub.
+
+```const token = 'YOUR_GITHUB_API_TOKEN';```
+
 Once your emulator is running, run the app! Flutter should automatically get the dependencies and packages for you.
 
 ```$ flutter run ```
