@@ -116,7 +116,7 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
           temp['actor']['login'], temp['label']['name']));
     }
   }
-  //print(prTimeline.toString());
+  print(prTimeline.toString());
   return prTimeline;
 }
 

@@ -188,7 +188,7 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
     query {
       repository(owner: "${pullRequest.repo.organization}", name: "${pullRequest.repo.name}") {
         pullRequest(number: ${pullRequest.number}) {
-          timeline {
+          timeline(last: 100) {
             edges {
               node {
                 ... on IssueComment {
