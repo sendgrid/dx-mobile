@@ -10,7 +10,7 @@ For help getting started with Flutter, view our online
 ## Setting it up
 
 You'll need:</br>
-    - Flutter installation</br>
+    - Flutter installation (please download this version specifically) - [v0.5.1](https://flutter.io/sdk-archive/)</br>
     - an emulator (Android or iOS)</br>
     - this repo</br>
 
@@ -18,7 +18,7 @@ After installing Flutter, use Terminal or PowerShell and change directories to t
 
 ```$ cd dx_mobile ```
 
-Then, launch any emulator. See the Flutter page for instructions on how to set up your emulators. As an example, if you have an emulator called iphonex, type this in your terminal:
+Then, launch any emulator. See the Flutter page for instructions on how to set up your emulators (for Android emulators, you'll need to launch it initially from Android Studio's AVM). As an example, if you have an emulator called iphonex, type this in your terminal:
 
 ```$ flutter emulators --launch iphonex ```
 
