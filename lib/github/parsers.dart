@@ -39,6 +39,16 @@ List<PullRequest> parseOpenPullRequestReviews(String resBody) {
   }).toList();
 }
 
+int parseBranches(String resBody) {
+  int jsonRes = json.decode(resBody)['data']['repository']['refs']['totalCount'];
+  return jsonRes;
+}
+
+int parseReleases (String resBody) {
+  int jsonRes = json.decode(resBody)['data']['repository']['refs']['totalCount'];
+  return jsonRes;
+}
+
 List<PullRequest> parsePullRequests(String resBody, String owner) {
   List jsonRes = json.decode(resBody)['data']['organization']['repository']
       ['pullRequests']['nodes'];
@@ -75,7 +85,7 @@ List<Issue> parseIssues(String resBody, String owner) {
   List<Issue> issues = [];
   for (var i = 0; i < jsonRes.length; i++) {
     issues.add(Issue(jsonRes[i]['title'], jsonRes[i]['id'], jsonRes[i]['url'],
-        repo, jsonRes[i]['author']['login'], jsonRes[i]['state']));
+        repo, jsonRes[i]['author']['login'], jsonRes[i]['state'], jsonRes[i]['number']));
   }
   //print (issues.toString());
   return issues;
@@ -89,12 +99,13 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
   for (var i = 0; i < jsonRes.length; i++) {
     Map temp = jsonRes[i]['node'];
     if (temp.keys.contains('bodyText')) {
-      prTimeline.add(IssueComment(pr, temp['id'], temp['url'], "",
+      prTimeline.add(IssueComment(pr, null, temp['id'], temp['url'], "",
           temp['author']['login'], temp['bodyText']));
     } else if (temp.keys.contains('message')) {
       if (temp['author']['user'] == null) {
         prTimeline.add(Commit(
           pr,
+          null,
           temp['id'],
           temp['url'],
           "",
@@ -104,6 +115,7 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
       } else {
         prTimeline.add(Commit(
           pr,
+          null,
           temp['id'],
           temp['url'],
           "",
@@ -112,21 +124,49 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
         ));
       }
     } else if (temp.keys.contains('label')) {
-      prTimeline.add(LabeledEvent(pr, temp['id'], temp['label']['url'], "",
+      prTimeline.add(LabeledEvent(pr, null, temp['id'], temp['label']['url'], "",
           temp['actor']['login'], temp['label']['name']));
     }
   }
-  print(prTimeline.toString());
   return prTimeline;
 }
 
-int parseBranches(String resBody) {
-  int jsonRes = json.decode(resBody)['data']['repository']['refs']['totalCount'];
-  return jsonRes;
-}
+List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
+  List jsonRes = json.decode(resBody)['data']['repository']['issue']
+      ['timeline']['edges'];
 
-int parseReleases (String resBody) {
-  int jsonRes = json.decode(resBody)['data']['repository']['refs']['totalCount'];
-
-  return jsonRes;
+  List<TimelineItem> issueTimeline = [];
+  for (var i = 0; i < jsonRes.length; i++) {
+    Map temp = jsonRes[i]['node'];
+    if (temp.keys.contains('bodyText')) {
+      issueTimeline.add(IssueComment(null, issue, temp['id'], temp['url'], "",
+          temp['author']['login'], temp['bodyText']));
+    } else if (temp.keys.contains('message')) {
+      if (temp['author']['user'] == null) {
+        issueTimeline.add(Commit(
+          null,
+          issue,
+          temp['id'],
+          temp['url'],
+          "",
+          "",
+          temp['message'],
+        ));
+      } else {
+        issueTimeline.add(Commit(
+          null,
+          issue,
+          temp['id'],
+          temp['url'],
+          "",
+          temp['author']['user']['login'],
+          temp['message'],
+        ));
+      }
+    } else if (temp.keys.contains('label')) {
+      issueTimeline.add(LabeledEvent(null, issue, temp['id'], temp['label']['url'], "",
+          temp['actor']['login'], temp['label']['name']));
+    }
+  }
+  return issueTimeline;
 }

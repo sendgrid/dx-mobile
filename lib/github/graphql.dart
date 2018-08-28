@@ -120,6 +120,39 @@ getDiff(PullRequest pullRequest) async {
   return response.body;
 }
 
+// retrieves number of branches in a repo
+Future<int> getBranches(String owner, String repoName) async {
+  final query = '''
+    query {
+      repository(name: "$repoName", owner: "$owner") {
+        refs(last: 100 , refPrefix:"refs/heads/") {
+          totalCount
+        }
+      }
+    }
+  ''';
+
+  final result = await _query(query);
+  return parseBranches(result);
+}
+
+// retrieves number of releases in a repo
+Future<int> getReleases(String owner, String repoName) async {
+  final query = '''
+    query {
+      repository(name: "$repoName", owner: "$owner") {
+        refs(refPrefix:"refs/tags/") {
+          totalCount
+        }
+      }
+    }
+  ''';
+
+  final result = await _query(query);
+  return parseReleases(result);
+
+}
+
 // query for obtaining PRs for an organization
 Future<List<PullRequest>> getPRs(String owner, String repoName) async {
   final query = '''
@@ -230,35 +263,52 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
   return parsePRTimeline(result, pullRequest);
 }
 
-Future<int> getBranches(String owner, String repoName) async {
+// retrieves timeline for a specific issue
+Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
   final query = '''
     query {
-      repository(name: "$repoName", owner: "$owner") {
-        refs(last: 100 , refPrefix:"refs/heads/") {
-          totalCount
+      repository(owner: "${issue.repo.organization}", name: "${issue.repo.name}") {
+        issue(number: ${issue.number}) {
+          timeline(last: 100) {
+            edges {
+              node {
+                ... on IssueComment {
+                  bodyText
+                  id
+                  url
+                  author {
+                    login
+                  }
+                }
+                ... on Commit {
+                  message
+                  id
+                  url
+                  author {
+                    user {
+                      login
+                    }
+                  }
+                }
+                ... on LabeledEvent {
+                  id
+                  label {
+                    name
+                    url
+                  }
+                  actor {
+                    login
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
   ''';
-
   final result = await _query(query);
-  return parseBranches(result);
-}
-
-Future<int> getReleases(String owner, String repoName) async {
-  final query = '''
-    query {
-      repository(name: "$repoName", owner: "$owner") {
-        refs(refPrefix:"refs/tags/") {
-          totalCount
-        }
-      }
-    }
-  ''';
-
-  final result = await _query(query);
-  return parseReleases(result);
-
+  return parseIssueTimeline(result, issue);
 }
 
 /// Sends a GraphQL query to Github and returns raw response

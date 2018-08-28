@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import '../pages/issuetimelineview.dart';
+import '../github/timeline.dart';
+import '../github/graphql.dart';
 import '../github/issue.dart';
 
 class IssueListView extends StatefulWidget {
@@ -19,7 +22,6 @@ class IssueListView extends StatefulWidget {
 class IssueListViewState extends State<IssueListView> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
         appBar: AppBar(title: Text('Issue List')),
         body:
@@ -49,9 +51,19 @@ class IssueList extends StatelessWidget {
       children: issues
           .map((issue) => Container(
                   child: ListTile(
-                title: Text(issue.title),
+                title: Text("${issue.title} #${issue.number}"),
                 subtitle: Text(issue.author),
-                onTap: () {},
+                onTap: () {
+                  Future<List<TimelineItem>> timelines =
+                      getIssueTimeline(issue);
+                  // display them
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            IssueTimelineView(timelines, issue),
+                      ));
+                },
               )))
           .toList(),
     );

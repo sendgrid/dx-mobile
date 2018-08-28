@@ -21,7 +21,6 @@ class PRListView extends StatefulWidget {
 class PRListViewState extends State<PRListView> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
         appBar: AppBar(title: Text('Pull Request List')),
         body: FutureBuilder(future: widget.prList, builder: _buildPRList));
@@ -37,7 +36,6 @@ class PRListViewState extends State<PRListView> {
 
   Widget _buildPRList(
       BuildContext context, AsyncSnapshot<List<PullRequest>> snapshot) {
-    _refreshPRList();
     if (snapshot.connectionState == ConnectionState.done) {
       return snapshot.data.length != 0
           ? PRList(snapshot.data)

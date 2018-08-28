@@ -1,38 +1,38 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../github/pullrequest.dart';
+import '../github/issue.dart';
 import '../github/timeline.dart';
 
-class PRTimelineView extends StatelessWidget {
-  final Future<List<TimelineItem>> prTimelineList;
-  final PullRequest pr;
+class IssueTimelineView extends StatelessWidget {
+  final Future<List<TimelineItem>> issueTimelineList;
+  final Issue issue;
 
-  PRTimelineView(this.prTimelineList, this.pr);
+  IssueTimelineView(this.issueTimelineList, this.issue);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('${pr.title}')),
+        appBar: AppBar(title: Text('${issue.title}')),
         body: FutureBuilder(
-            future: prTimelineList, builder: _buildPRTimelineList));
+            future: issueTimelineList, builder: _buildIssueTimelineList));
   }
 
-  Widget _buildPRTimelineList(
+  Widget _buildIssueTimelineList(
       BuildContext context, AsyncSnapshot<List<TimelineItem>> snapshot) {
     if (snapshot.connectionState == ConnectionState.done) {
       return snapshot.data.length != 0
-          ? PRTimelineList(snapshot.data)
-          : Center(child: Text('No timeline for this PR!'));
+          ? IssueTimelineList(snapshot.data)
+          : Center(child: Text('No timeline for this issue!'));
     } else {
       return Center(child: CircularProgressIndicator());
     }
   }
 }
 
-class PRTimelineList extends StatelessWidget {
+class IssueTimelineList extends StatelessWidget {
   final List<TimelineItem> timeline;
 
-  PRTimelineList(this.timeline);
+  IssueTimelineList(this.timeline);
 
   @override
   Widget build(BuildContext context) {

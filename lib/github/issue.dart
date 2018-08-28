@@ -7,8 +7,9 @@ class Issue {
   final String title;
   final String author;
   final String issueState;
+  final int number;
   
-  Issue(this.title, this.id, this.url, this.repo, this.author, this.issueState);
+  Issue(this.title, this.id, this.url, this.repo, this.author, this.issueState, this.number);
 
-  String toString() => '$title, $id, $url, $repo, $author, $issueState';
+  String toString() => '$title, $id, $url, $repo, $author, $issueState, $number';
 }
