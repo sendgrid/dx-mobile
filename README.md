@@ -9,10 +9,10 @@ For help getting started with Flutter, view our online
 
 ## Setting it up
 
-You'll need:
-    - Flutter installation
-    - an emulator (Android or iOS)
-    - this repo
+You'll need:</br>
+    - Flutter installation</br>
+    - an emulator (Android or iOS)</br>
+    - this repo</br>
 
 After installing Flutter, use Terminal or PowerShell and change directories to the dx_mobile directory you just cloned.
 
