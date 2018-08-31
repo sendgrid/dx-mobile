@@ -1,0 +1,17 @@
+.DS_Store
+
+.packages
+.pub/
+
+ios/.generated/
+ios/Pods/
+ios/Podfile.lock
+build/
+
+.flutter-plugins
+packages
+pubspec.lock
+
+.history
+
+token.dart
