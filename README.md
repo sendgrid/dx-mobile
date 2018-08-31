@@ -18,11 +18,17 @@ After installing Flutter, use Terminal or PowerShell and change directories to t
 
 ```$ cd dx-mobile ```
 
-Then, launch any emulator. See the Flutter page for instructions on how to set up your emulators (for Android emulators, you'll need to launch it initially from Android Studio's AVM). As an example, if you have an emulator called iphonex, type this in your terminal:
+Then, launch any emulator. See the Flutter page for instructions on how to set up your emulators (for Android emulators, you'll need to launch it initially from Android Studio's AVM). 
+
+You can determine what emulators are available by running:
+
+```$ flutter emulators```
+
+As an example, if you have an emulator called iphonex, type this in your terminal:
 
 ```$ flutter emulators --launch iphonex ```
 
-After that, open the project directory up in any IDE and in the lib/github directory, create a file called token.dart (add this file to your .gitingore file) and add what's below into the file. This will be used to authenticate with GitHub.
+After that, open the project directory up in any IDE and in the lib/github directory, create a file called `token.dart` (add this file to your .gitingore file) and add what's below into the file. This will be used to authenticate with GitHub.
 
 ```const token = 'YOUR_GITHUB_API_TOKEN';```
 
