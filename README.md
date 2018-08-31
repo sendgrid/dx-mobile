@@ -16,7 +16,7 @@ You'll need:</br>
 
 After installing Flutter, use Terminal or PowerShell and change directories to the dx_mobile directory you just cloned.
 
-```$ cd dx_mobile ```
+```$ cd dx-mobile ```
 
 Then, launch any emulator. See the Flutter page for instructions on how to set up your emulators (for Android emulators, you'll need to launch it initially from Android Studio's AVM). As an example, if you have an emulator called iphonex, type this in your terminal:
 
