@@ -50,12 +50,12 @@ int parseReleases (String resBody) {
 }
 
 List<PullRequest> parsePullRequests(String resBody, String owner) {
-  List jsonRes = json.decode(resBody)['data']['organization']['repository']
+  List jsonRes = json.decode(resBody)['data']['repository']
       ['pullRequests']['nodes'];
   // print('json');
   //print(jsonRes.toString());
 
-  Map repoInfo = json.decode(resBody)['data']['organization']['repository'];
+  Map repoInfo = json.decode(resBody)['data']['repository'];
   //print(repoInfo['stargazers']);
   Repository repo = Repository(repoInfo['name'], repoInfo['url'],
       repoInfo['stargazers']['totalCount'], owner);
@@ -75,10 +75,10 @@ List<PullRequest> parsePullRequests(String resBody, String owner) {
 }
 
 List<Issue> parseIssues(String resBody, String owner) {
-  List jsonRes = json.decode(resBody)['data']['organization']['repository']
+  List jsonRes = json.decode(resBody)['data']['repository']
       ['issues']['nodes'];
 
-  Map repoInfo = json.decode(resBody)['data']['organization']['repository'];
+  Map repoInfo = json.decode(resBody)['data']['repository'];
   Repository repo = Repository(repoInfo['name'], repoInfo['url'],
       repoInfo['stargazers']['totalCount'], owner);
 
