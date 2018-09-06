@@ -22,7 +22,6 @@ class Dashboard extends StatefulWidget {
   Dashboard(this.owner, this.repoName, this.prList, this.issueList, this.branches, this.releases);
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return DashboardState();
   }
 }
@@ -34,7 +33,7 @@ class DashboardState extends State<Dashboard> {
         appBar: AppBar(
           elevation: 2.0,
           backgroundColor: Colors.white,
-          title: Text('DXGo!',
+          title: Text(widget.repoName,
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w700,

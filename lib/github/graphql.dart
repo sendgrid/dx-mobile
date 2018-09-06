@@ -157,24 +157,22 @@ Future<int> getReleases(String owner, String repoName) async {
 Future<List<PullRequest>> getPRs(String owner, String repoName) async {
   final query = '''
       query {
-        organization(login: "$owner") {
-          repository(name: "$repoName") {
-            pullRequests(last: 100, states: [OPEN], orderBy: {field: CREATED_AT, direction: DESC}) {
-              nodes {
-                author {
-                  login
-                }
-                title
-                url
-                id
-                number
+        repository(owner: "$owner", name: "$repoName") {
+          pullRequests(last: 100, states: [OPEN], orderBy: {field: CREATED_AT, direction: DESC}) {
+            nodes {
+              author {
+                login
               }
+              title
+              url
+              id
+              number
             }
-            name
-            url
-            stargazers(first: 1) {
-              totalCount
-            }
+          }
+          name
+          url
+          stargazers(first: 1) {
+            totalCount
           }
         }
       }
@@ -188,25 +186,23 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
 Future<List<Issue>> getIssues(String owner, String repoName) async {
   final query = '''
       query {
-        organization(login: "$owner") {
-          repository(name: "$repoName") {
-            issues(last: 100, states: [OPEN], orderBy: {field: CREATED_AT, direction: DESC}) {
-              nodes {
-                author {
-                  login
-                }
-                title
-                url
-                id
-                state
-                number
+        repository(owner: "$owner", name: "$repoName") {
+          issues(last: 100, states: [OPEN], orderBy: {field: CREATED_AT, direction: DESC}) {
+            nodes {
+              author {
+                login
               }
+              title
+              url
+              id
+              state
+              number
             }
-            name
-            url
-            stargazers(first: 1) {
-              totalCount
-            }
+          }
+          name
+          url
+          stargazers(first: 1) {
+            totalCount
           }
         }
       }
@@ -309,6 +305,40 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
   ''';
   final result = await _query(query);
   return parseIssueTimeline(result, issue);
+}
+
+// adds a comment to an issue or PR
+Future<String> addComment(Issue issue, PullRequest pr, String commentBody) async {
+  // issue will be null if it's for a PullRequest
+  // pr will be null if it's for an Issue
+  String id = "";
+  if (issue == null) {
+    id = pr.id;
+  }
+  else {
+    id = issue.id;
+  }
+  final mutation = '''
+  mutation {
+    addComment(input:{subjectId: "[$id]", body: "$commentBody"}) {
+      commentEdge {
+        node {
+          bodyText
+          author {
+            login
+          }
+        }
+      }
+      subject {
+        id
+      }
+    }
+  }
+  ''';
+
+  final result = await _query(mutation);
+  print(result);
+
 }
 
 /// Sends a GraphQL query to Github and returns raw response
