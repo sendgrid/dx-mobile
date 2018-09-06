@@ -18,12 +18,13 @@ The Flutter installation includes XCode (for Mac) and Android Studio. If you're 
 ```$ xcode-select --install```
 
 If you run into some flutter doctor issues/errors, try running these commands:
-```$ brew update && brew upgrade```
-```$ brew install --HEAD libimobiledevice```
-```$ brew install ideviceinstaller```
-```$ brew install ios-deploy```
-```$ brew install cocoapods```
-```$ pod setup```
+
+```$ brew update && brew upgrade```</br>
+```$ brew install --HEAD libimobiledevice```</br>
+```$ brew install ideviceinstaller```</br>
+```$ brew install ios-deploy```</br>
+```$ brew install cocoapods```</br>
+```$ pod setup```</br>
 
 
 After installing Flutter, use Terminal or PowerShell and change directories to the dx_mobile directory you just cloned.
