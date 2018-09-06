@@ -4,52 +4,79 @@ import '../github/graphql.dart';
 import '../github/issue.dart';
 import '../github/timeline.dart';
 
-class IssueTimelineView extends StatelessWidget {
+class IssueTimelineView extends StatefulWidget {
   final Future<List<TimelineItem>> issueTimelineList;
   final Issue issue;
 
   IssueTimelineView(this.issueTimelineList, this.issue);
 
   @override
+    State<StatefulWidget> createState() {
+      return IssueTimelineViewState();
+    }
+}
+
+
+class IssueTimelineViewState extends State<IssueTimelineView> {
+  String comment;
+  TextEditingController _textEditingController = new TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
     String comment;
     return Scaffold(
-        appBar: AppBar(title: Text('${issue.title}')),
-        body: FutureBuilder(
-            future: issueTimelineList, builder: _buildIssueTimelineList),
-                bottomNavigationBar: BottomAppBar(
-        child: new Row(
-          children: <Widget>[
-            new Expanded (
-              child: Container(
-              padding: EdgeInsets.only(left: 10.0),
-              child:
-              TextField(
-                decoration: InputDecoration(labelText: "Enter comment here"),
-                keyboardType: TextInputType.multiline,
-                onChanged: (String c) {
-                  comment = c;
-                },
-                onSubmitted: (String c) {
-                  comment = c;
-                }
-              ),
-              width: MediaQuery.of(context).size.width*5/8,
-            ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width/10,
-            ),
-            RaisedButton(
-              child: Text("Comment"),
-              color: Theme.of(context).primaryColorLight,
-              onPressed: () {
-                addComment(issue, null, comment);
-              },
-            )
-          ],
-        )
-      ),
+        appBar: AppBar(title: Text('${widget.issue.title}')),
+        body:
+          Column (
+            children: <Widget> [
+              Flexible(child: FutureBuilder(
+                future: widget.issueTimelineList,
+                builder: _buildIssueTimelineList
+              )),
+              Divider(height: 1.0),
+              Container(
+                child: new Row(
+                  children: <Widget>[
+                    new Expanded (
+                      child: Container(
+                      padding: EdgeInsets.only(left: 10.0),
+                      child:
+                      TextField(
+                        controller: _textEditingController,
+                        decoration: InputDecoration(labelText: "Enter comment here"),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 2,
+                        onChanged: (String c) {
+                          comment = c;
+                        },
+                        onSubmitted: (String c) {
+                          comment = c;
+                          if (comment != null) {
+                            addComment(widget.issue, null, comment);
+                          }
+                          _textEditingController.clear();
+                        }
+                      ),
+                      width: MediaQuery.of(context).size.width*5/8,
+                    ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width/10,
+                    ),
+                    RaisedButton(
+                      child: Text("Comment"),
+                      color: Theme.of(context).primaryColorLight,
+                      onPressed: () {
+                        if (comment != null) {
+                          addComment(widget.issue, null, comment);
+                        }
+                        _textEditingController.clear();
+                      },
+                    )
+                  ], 
+              ))
+            ]
+          )
       );
   }
 

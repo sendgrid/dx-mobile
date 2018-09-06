@@ -20,6 +20,7 @@ class PRTimelineView extends StatefulWidget {
 class PRTimelineViewState extends State<PRTimelineView> {
   String comment;
   TextEditingController _textEditingController = new TextEditingController();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,12 +44,15 @@ class PRTimelineViewState extends State<PRTimelineView> {
                         controller: _textEditingController,
                         decoration: InputDecoration(labelText: "Enter comment here"),
                         keyboardType: TextInputType.multiline,
+                        maxLines: 2,
                         onChanged: (String c) {
                           comment = c;
                         },
                         onSubmitted: (String c) {
                           comment = c;
-                          addComment(null, widget.pr, comment);
+                          if (comment != null) {
+                            addComment(null, widget.pr, comment);
+                          }
                           _textEditingController.clear();
                         }
                       ),
@@ -62,7 +66,9 @@ class PRTimelineViewState extends State<PRTimelineView> {
                       child: Text("Comment"),
                       color: Theme.of(context).primaryColorLight,
                       onPressed: () {
-                        addComment(null, widget.pr, comment);
+                        if (comment != null) {
+                          addComment(null, widget.pr, comment);
+                        }
                         _textEditingController.clear();
                       },
                     )
@@ -70,40 +76,6 @@ class PRTimelineViewState extends State<PRTimelineView> {
               ))
             ]
           )
-            
-        // bottomNavigationBar: BottomAppBar(
-        //   child: new Row(
-        //     children: <Widget>[
-        //       new Expanded (
-        //         child: Container(
-        //         padding: EdgeInsets.only(left: 10.0),
-        //         child:
-        //         TextField(
-        //           decoration: InputDecoration(labelText: "Enter comment here"),
-        //           keyboardType: TextInputType.multiline,
-        //           onChanged: (String c) {
-        //             comment = c;
-        //           },
-        //           onSubmitted: (String c) {
-        //             comment = c;
-        //           }
-        //         ),
-        //         width: MediaQuery.of(context).size.width*5/8,
-        //       ),
-        //       ),
-        //       SizedBox(
-        //         width: MediaQuery.of(context).size.width/10,
-        //       ),
-        //       RaisedButton(
-        //         child: Text("Comment"),
-        //         color: Theme.of(context).primaryColorLight,
-        //         onPressed: () {
-        //           addComment(null, pr, comment);
-        //         },
-        //       )
-        //     ],
-        //   )
-        // ),
         );
   }
 
