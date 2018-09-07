@@ -8,12 +8,14 @@ For help getting started with Flutter, view our online
 [documentation](https://flutter.io/).
 
 ## Flutter Installation
+Please download this version of the Flutter SDK specifically - [v0.5.1](https://flutter.io/sdk-archive/)</br>
 [Mac](https://flutter.io/setup-macos/) | [Windows](https://flutter.io/setup-windows/) | [Linux](https://flutter.io/setup-linux/)
+
 
 ## Setting it up
 
 You'll need:</br>
-    - Flutter installation (please download this version specifically) - [v0.5.1](https://flutter.io/sdk-archive/)</br>
+    - installation of Flutter v0.5.1</br>
     - an emulator (Android or iOS)</br>
     - this repo</br>
 
