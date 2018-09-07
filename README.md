@@ -17,7 +17,8 @@ Please download this version of the Flutter SDK specifically - [v0.5.1](https://
 You'll need:</br>
     - installation of Flutter v0.5.1</br>
     - an emulator (Android or iOS)</br>
-    - this repo</br>
+    - a GitHub API token (get yours [here](https://github.com/settings/tokens))</br>
+    - cloned local copy of this repo</br>
 
 The Flutter installation includes XCode (for Mac only) and Android Studio (Windows/Linux/Mac). If you're using a Mac and not sure if you have the Xcode command line tools, run this command:
 ```$ xcode-select --install```
