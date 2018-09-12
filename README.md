@@ -17,7 +17,8 @@ Please download this version of the Flutter SDK specifically - [v0.5.1](https://
 You'll need:</br>
     - installation of Flutter v0.5.1</br>
     - an emulator (Android or iOS)</br>
-    - this repo</br>
+    - a GitHub API token (get yours [here](https://github.com/settings/tokens))</br>
+    - cloned local copy of this repo</br>
 
 The Flutter installation includes XCode (for Mac only) and Android Studio (Windows/Linux/Mac). If you're using a Mac and not sure if you have the Xcode command line tools, run this command:
 ```$ xcode-select --install```
@@ -40,6 +41,8 @@ Then, launch any emulator. See the Flutter setup page ([Mac](https://flutter.io/
 
 ```$ open -a Simulator```
 
+If you're having issues finding the AVD Manager in Android Studio, click [here](https://stackoverflow.com/questions/47173708/why-avd-manager-options-are-not-showing-in-android-studio)
+
 To see the emulators you have open, run this command:
 
 ```$ flutter emulators```
@@ -55,3 +58,7 @@ After that, open the project directory up in any IDE and in the lib/github direc
 Once your emulator is running, run the app! Flutter should automatically get the dependencies and packages for you.
 
 ```$ flutter run ```
+
+If you have multiple emulators running, you can run the app on all the devices at once by using this command.
+
+```$ flutter run -d all ```
