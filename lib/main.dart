@@ -21,8 +21,8 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   //hard code for now
-  String owner = "sendgrid";
-  String repoName = "sendgrid-go";
+  String owner = "agnesjang98";
+  String repoName = "testrepo";
 
   @override
   Widget build(BuildContext context) {

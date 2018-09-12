@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../github/pullrequest.dart';
 import '../github/graphql.dart' as graphql;
@@ -27,8 +28,30 @@ class Dashboard extends StatefulWidget {
 }
 
 class DashboardState extends State<Dashboard> {
+  Future<List<PullRequest>> prList;
+  Future<List<Issue>> issueList;
+  Future<int> branches;
+  Future<int> releases;
+
+  RefreshController rc = new RefreshController();
+
+  @override
+  void initState() {
+    prList = graphql.getPRs(widget.owner, widget.repoName);
+    issueList = graphql.getIssues(widget.owner, widget.repoName);
+    branches = graphql.getBranches(widget.owner, widget.repoName);
+    releases = graphql.getReleases(widget.owner, widget.repoName);
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    prList = widget.prList;
+    issueList = widget.issueList;
+    branches = widget.branches;
+    releases = widget.releases;
+
     return Scaffold(
         appBar: AppBar(
           elevation: 2.0,
@@ -39,7 +62,11 @@ class DashboardState extends State<Dashboard> {
                   fontWeight: FontWeight.w700,
                   fontSize: 30.0)),
         ),
-        body: StaggeredGridView.count(
+        body: SmartRefresher(
+          enablePullDown: true,
+          onRefresh: _refreshDashboard,
+          controller: rc,
+          child: StaggeredGridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12.0,
           mainAxisSpacing: 12.0,
@@ -66,8 +93,8 @@ class DashboardState extends State<Dashboard> {
                           Text('Releases',
                               style: TextStyle(color: Colors.blueAccent)),
                           FutureBuilder(
-                            future: widget.releases,
-                            builder: _buildFutureIntText
+                            future: releases,
+                            builder: _buildFutureIntText,
                           ),
                         ],
                       ),
@@ -100,8 +127,7 @@ class DashboardState extends State<Dashboard> {
                             )),
                         Padding(padding: EdgeInsets.only(bottom: 16.0)),
                         FutureBuilder(
-                            future: _getLength(widget
-                                .prList), // grabs user whose auth token is in token.dart
+                            future: _getLength(prList), // grabs user whose auth token is in token.dart
                             builder: _buildPRText),
                         Text('Pull Requests', style: TextStyle(color: Colors.black45)),
                       ]),
@@ -110,7 +136,7 @@ class DashboardState extends State<Dashboard> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => PRListView(
-                          widget.owner, widget.repoName, widget.prList)));
+                          widget.owner, widget.repoName, prList)));
             }),
             _buildTile(
                 Padding(
@@ -129,8 +155,7 @@ class DashboardState extends State<Dashboard> {
                               )),
                         Padding(padding: EdgeInsets.only(bottom: 16.0)),
                         FutureBuilder(
-                            future: _getLength(widget
-                                .issueList), // grabs user whose auth token is in token.dart
+                            future: _getLength(issueList), // grabs user whose auth token is in token.dart
                             builder: _buildIssueText),
                         Text('Issues', style: TextStyle(color: Colors.black45)),
                       ]),
@@ -155,7 +180,7 @@ class DashboardState extends State<Dashboard> {
                           Text('Branches',
                               style: TextStyle(color: Colors.redAccent)),
                           FutureBuilder(
-                            future: widget.branches,
+                            future: branches,
                             builder: _buildFutureIntText
                           ),
                         ],
@@ -181,7 +206,7 @@ class DashboardState extends State<Dashboard> {
             StaggeredTile.extent(1, 180.0),
             StaggeredTile.extent(2, 110.0),
           ],
-        ));
+        )));
   }
 
   Widget _buildTile(Widget child, {Function() onTap}) {
@@ -236,6 +261,41 @@ class DashboardState extends State<Dashboard> {
           fontWeight: FontWeight.w700,
           fontSize: 34.0));
   }
+  
+  void _refreshDashboard(bool b) {
+    setState(() {
+      prList = graphql.getPRs(widget.owner, widget.repoName);
+      issueList = graphql.getIssues(widget.owner, widget.repoName);
+      branches = graphql.getBranches(widget.owner, widget.repoName);
+      releases = graphql.getReleases(widget.owner, widget.repoName);
+
+      
+      rc.sendBack(true, RefreshStatus.completed);
+
+      Navigator.pushReplacement(context, 
+      PageRouteBuilder(
+        pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondAnimation) {
+            return Dashboard(widget.owner, widget.repoName, prList,
+            issueList, branches, releases);
+          },
+        transitionsBuilder: (BuildContext context, Animation<double> animation, 
+        Animation<double> secondAnimation, Widget child) {
+          return FadeTransition(
+            opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
+            child: child
+          );
+        }
+
+        ),
+      );
+      
+      
+      
+    });
+    b = true;
+  }
+
 }
 
 // Displays the user's login and avatar
