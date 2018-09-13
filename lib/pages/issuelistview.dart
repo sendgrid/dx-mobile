@@ -96,7 +96,14 @@ class IssueListViewState extends State<IssueListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Issue List'),
+        appBar: AppBar(
+          title: Text('Issue List'),
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
         ),
         body:
           FutureBuilder(future: issueList, builder: _buildIssueList));

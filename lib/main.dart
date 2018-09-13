@@ -43,6 +43,9 @@ class MyAppState extends State<MyApp> {
           // because you need to update the PRList yourself
           // '/prs': (BuildContext context) => PRListView(owner, repoName, PRList),
           // '/issues': (BuildContext context) => IssueListView(owner, repoName, IssueList)
+          '/dashboard': (BuildContext context) => Dashboard(owner, repoName, graphql.getPRs(owner, repoName),
+          graphql.getIssues(owner, repoName), graphql.getBranches(owner, repoName),
+          graphql.getReleases(owner, repoName))
         });
   }
 }

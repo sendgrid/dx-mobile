@@ -100,7 +100,14 @@ class PRListViewState extends State<PRListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Pull Request List')),
+        appBar: AppBar(
+          title: Text('Pull Request List'),
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )),
         body: FutureBuilder(future: prList, builder: _buildPRList));
   }
 
