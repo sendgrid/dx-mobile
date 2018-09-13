@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import '../github/graphql.dart';
 import '../github/issue.dart';
 import '../github/timeline.dart';
@@ -12,14 +14,95 @@ class IssueTimelineView extends StatefulWidget {
 
   @override
     State<StatefulWidget> createState() {
-      return IssueTimelineViewState();
+      return IssueTimelineViewState(issueTimelineList);
     }
 }
 
 
 class IssueTimelineViewState extends State<IssueTimelineView> {
+  Future<List<TimelineItem>> issueTimelineList;
   String comment;
+  
+  RefreshController rc = new RefreshController();
   TextEditingController _textEditingController = new TextEditingController();
+
+  IssueTimelineViewState(this.issueTimelineList);
+
+  Widget _createIssueTimelineListWidget(BuildContext context, List<TimelineItem> timeline) {
+    return SmartRefresher(
+      enablePullDown: true,
+      onRefresh: _refreshIssueTimelineList,
+      controller: rc,
+      child: ListView.builder(
+      itemCount: timeline.length,
+      itemBuilder: (BuildContext context, int idx) {
+        if (timeline[idx].runtimeType == IssueComment) {
+          IssueComment tmp = timeline[idx];
+          return ListTile(
+            leading: Text(tmp.author),
+            title: Text(tmp.url),
+            subtitle: Text(tmp.body)
+          );
+        }
+        else if (timeline[idx].runtimeType == Commit) {
+          Commit tmp = timeline[idx];
+          return ListTile(
+            leading: Text(tmp.author),
+            title: Text(tmp.url),
+            subtitle: Text(tmp.message)
+          );
+        }
+        else if (timeline[idx].runtimeType == LabeledEvent) {
+          LabeledEvent tmp = timeline[idx];
+          return ListTile(
+            leading: Text(tmp.author),
+            title: Text(tmp.url),
+            subtitle: Text(tmp.labelName)
+          );
+        }
+      },
+    )
+    );
+  }
+
+  void _refreshIssueTimelineList(bool b) {
+      issueTimelineList = getIssueTimeline(widget.issue);
+      //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
+      // can look into making this better later on
+
+    Navigator.pushReplacement(context, 
+      PageRouteBuilder(
+        pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondAnimation) {
+            return IssueTimelineView(issueTimelineList, widget.issue);
+          },
+        transitionsBuilder: (BuildContext context, Animation<double> animation, 
+        Animation<double> secondAnimation, Widget child) {
+          return FadeTransition(
+            opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
+            child: child
+          );
+        }
+
+        ),
+      );
+    b = true;
+  }
+
+  Widget _buildIssueTimelineList(
+      BuildContext context, AsyncSnapshot<List<TimelineItem>> snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      return snapshot.data.length != 0
+          ? _createIssueTimelineListWidget(context, snapshot.data)
+          : SmartRefresher(
+              enablePullDown: true,
+              onRefresh: _refreshIssueTimelineList,
+              controller: rc,
+              child: ListView(children: <Widget>[Text('No timeline for this issue!')]));
+    } else {
+      return Center(child: CircularProgressIndicator());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +113,7 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
           Column (
             children: <Widget> [
               Flexible(child: FutureBuilder(
-                future: widget.issueTimelineList,
+                future: issueTimelineList,
                 builder: _buildIssueTimelineList
               )),
               Divider(height: 1.0),
@@ -80,16 +163,6 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
       );
   }
 
-  Widget _buildIssueTimelineList(
-      BuildContext context, AsyncSnapshot<List<TimelineItem>> snapshot) {
-    if (snapshot.connectionState == ConnectionState.done) {
-      return snapshot.data.length != 0
-          ? IssueTimelineList(snapshot.data)
-          : Center(child: Text('No timeline for this issue!'));
-    } else {
-      return Center(child: CircularProgressIndicator());
-    }
-  }
 }
 
 class IssueTimelineList extends StatelessWidget {
@@ -99,34 +172,6 @@ class IssueTimelineList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: this.timeline.length,
-      itemBuilder: (BuildContext context, int idx) {
-        if (timeline[idx].runtimeType == IssueComment) {
-          IssueComment tmp = timeline[idx];
-          return ListTile(
-            leading: Text(tmp.author),
-            title: Text(tmp.url),
-            subtitle: Text(tmp.body)
-          );
-        }
-        else if (timeline[idx].runtimeType == Commit) {
-          Commit tmp = timeline[idx];
-          return ListTile(
-            leading: Text(tmp.author),
-            title: Text(tmp.url),
-            subtitle: Text(tmp.message)
-          );
-        }
-        else if (timeline[idx].runtimeType == LabeledEvent) {
-          LabeledEvent tmp = timeline[idx];
-          return ListTile(
-            leading: Text(tmp.author),
-            title: Text(tmp.url),
-            subtitle: Text(tmp.labelName)
-          );
-        }
-      },
-    );
+    return ;
   }
 }

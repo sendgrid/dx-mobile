@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import '../github/graphql.dart';
 import '../github/pullrequest.dart';
 import '../github/timeline.dart';
@@ -12,15 +15,95 @@ class PRTimelineView extends StatefulWidget {
 
   @override
     State<StatefulWidget> createState() {      
-      return PRTimelineViewState();
+      return PRTimelineViewState(prTimelineList);
     }
 
 }
 
 class PRTimelineViewState extends State<PRTimelineView> {
+  Future<List<TimelineItem>> prTimelineList;
   String comment;
+
+  RefreshController rc = new RefreshController();
   TextEditingController _textEditingController = new TextEditingController();
+
+  PRTimelineViewState(this.prTimelineList);
   
+  Widget _createPRTimelineListWidget(BuildContext context, List<TimelineItem> timeline) {
+    return SmartRefresher(
+      enablePullDown: true,
+      onRefresh: _refreshPRTimelineList,
+      controller: rc,
+      child: ListView.builder(
+        itemCount: timeline.length,
+        itemBuilder: (BuildContext context, int idx) {
+          if (timeline[idx].runtimeType == IssueComment) {
+            IssueComment tmp = timeline[idx];
+            return ListTile(
+              leading: Text(tmp.author),
+              //title: Text(tmp.url),
+              title: Text(tmp.body),
+            );
+          }
+          else if (timeline[idx].runtimeType == Commit) {
+            Commit tmp = timeline[idx];
+            return ListTile(
+              leading: Text(tmp.author),
+              //title: Text(tmp.url),
+              title: Text(tmp.message)
+            );
+          }
+          else if (timeline[idx].runtimeType == LabeledEvent) {
+            LabeledEvent tmp = timeline[idx];
+            return ListTile(
+              leading: Text(tmp.author),
+              //title: Text(tmp.url),
+              title: Text(tmp.labelName)
+            );
+          }
+        }));
+  }
+
+  void _refreshPRTimelineList(bool b) {
+      prTimelineList = getPRTimeline(widget.pr);
+      //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
+      // can look into making this better later on
+
+    Navigator.pushReplacement(context, 
+      PageRouteBuilder(
+        pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondAnimation) {
+            return PRTimelineView(prTimelineList, widget.pr);
+          },
+        transitionsBuilder: (BuildContext context, Animation<double> animation, 
+        Animation<double> secondAnimation, Widget child) {
+          return FadeTransition(
+            opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
+            child: child
+          );
+        }
+
+        ),
+      );
+    b = true;
+  }
+
+  Widget _buildPRTimelineList(
+      BuildContext context, AsyncSnapshot<List<TimelineItem>> snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      return snapshot.data.length != 0
+          ? _createPRTimelineListWidget(context, snapshot.data)
+          : SmartRefresher(
+              enablePullDown: true,
+              onRefresh: _refreshPRTimelineList,
+              controller: rc,
+              child: ListView(children: <Widget>[Text('No timeline for this PR!')],)
+            );
+    } else {
+      return Center(child: CircularProgressIndicator());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +112,7 @@ class PRTimelineViewState extends State<PRTimelineView> {
           Column (
             children: <Widget> [
               Flexible(child: FutureBuilder(
-                future: widget.prTimelineList,
+                future: prTimelineList,
                 builder: _buildPRTimelineList
               )),
               Divider(height: 1.0),
@@ -52,6 +135,7 @@ class PRTimelineViewState extends State<PRTimelineView> {
                           comment = c;
                           if (comment != null) {
                             addComment(null, widget.pr, comment);
+                            _refreshPRTimelineList(true);
                           }
                           _textEditingController.clear();
                         }
@@ -68,6 +152,7 @@ class PRTimelineViewState extends State<PRTimelineView> {
                       onPressed: () {
                         if (comment != null) {
                           addComment(null, widget.pr, comment);
+                          _refreshPRTimelineList(true);
                         }
                         _textEditingController.clear();
                       },
@@ -79,53 +164,4 @@ class PRTimelineViewState extends State<PRTimelineView> {
         );
   }
 
-  Widget _buildPRTimelineList(
-      BuildContext context, AsyncSnapshot<List<TimelineItem>> snapshot) {
-    if (snapshot.connectionState == ConnectionState.done) {
-      return snapshot.data.length != 0
-          ? PRTimelineList(snapshot.data, widget.pr)
-          : Center(child: Text('No timeline for this PR!'));
-    } else {
-      return Center(child: CircularProgressIndicator());
-    }
-  }
-}
-
-class PRTimelineList extends StatelessWidget {
-  final List<TimelineItem> timeline;
-  final PullRequest pr;
-
-  PRTimelineList(this.timeline, this.pr);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: this.timeline.length,
-        itemBuilder: (BuildContext context, int idx) {
-          if (timeline[idx].runtimeType == IssueComment) {
-            IssueComment tmp = timeline[idx];
-            return ListTile(
-              leading: Text(tmp.author),
-              title: Text(tmp.url),
-              subtitle: Text(tmp.body),
-            );
-          }
-          else if (timeline[idx].runtimeType == Commit) {
-            Commit tmp = timeline[idx];
-            return ListTile(
-              leading: Text(tmp.author),
-              title: Text(tmp.url),
-              subtitle: Text(tmp.message)
-            );
-          }
-          else if (timeline[idx].runtimeType == LabeledEvent) {
-            LabeledEvent tmp = timeline[idx];
-            return ListTile(
-              leading: Text(tmp.author),
-              title: Text(tmp.url),
-              subtitle: Text(tmp.labelName)
-            );
-          }
-        });
-  }
 }

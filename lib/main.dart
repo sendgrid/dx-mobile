@@ -21,8 +21,8 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   //hard code for now
-  String owner = "sendgrid";
-  String repoName = "sendgrid-go";
+  String owner = "agnesjang98";
+  String repoName = "testrepo";
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +43,9 @@ class MyAppState extends State<MyApp> {
           // because you need to update the PRList yourself
           // '/prs': (BuildContext context) => PRListView(owner, repoName, PRList),
           // '/issues': (BuildContext context) => IssueListView(owner, repoName, IssueList)
+          '/dashboard': (BuildContext context) => Dashboard(owner, repoName, graphql.getPRs(owner, repoName),
+          graphql.getIssues(owner, repoName), graphql.getBranches(owner, repoName),
+          graphql.getReleases(owner, repoName))
         });
   }
 }
