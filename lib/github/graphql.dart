@@ -1,6 +1,6 @@
 // Copyright 2018 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// found in the LICENSE file. (https://github.com/efortuna/dwmpr/blob/master/LICENSE)
 
 // ALL QUERIES IN HERE
 
@@ -16,7 +16,6 @@ import 'timeline.dart';
 import 'repository.dart';
 import 'token.dart';
 import 'user.dart';
-
 
 final url = 'https://api.github.com/graphql';
 final headers = {'Authorization': 'bearer $token'};
@@ -120,6 +119,9 @@ getDiff(PullRequest pullRequest) async {
   return response.body;
 }
 
+// -------------------------------------------------------------------------------------
+// NON CHROMIUM AUTHOR CODE BELOW (the code below is under MIT license)
+
 // retrieves number of branches in a repo
 Future<int> getBranches(String owner, String repoName) async {
   final query = '''
@@ -150,7 +152,6 @@ Future<int> getReleases(String owner, String repoName) async {
 
   final result = await _query(query);
   return parseReleases(result);
-
 }
 
 // query for obtaining PRs for an organization
@@ -314,8 +315,7 @@ void addComment(Issue issue, PullRequest pr, String commentBody) async {
   String id = "";
   if (issue == null) {
     id = pr.id;
-  }
-  else {
+  } else {
     id = issue.id;
   }
   final mutation = '''
@@ -338,7 +338,6 @@ void addComment(Issue issue, PullRequest pr, String commentBody) async {
 
   final result = await _query(mutation);
   print(result);
-
 }
 
 /// Sends a GraphQL query to Github and returns raw response

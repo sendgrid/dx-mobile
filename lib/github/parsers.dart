@@ -1,6 +1,6 @@
 // Copyright 2018 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// found in the LICENSE file. (https://github.com/efortuna/dwmpr/blob/master/LICENSE)
 
 /// Set of hand-crafted JSON parsers for GraphQL responses
 
@@ -18,7 +18,7 @@ User parseUser(String resBody) {
   return User(userJson['login'], userJson['name'], userJson['avatarUrl']);
 }
 
-/// Parses a Gtihub GraphQL pull request reviews response
+/// Parses a Github GraphQL pull request reviews response
 /// // NOT USED
 List<PullRequest> parseOpenPullRequestReviews(String resBody) {
   List jsonRes = json.decode(resBody)['data']['search']['edges'];
@@ -39,19 +39,24 @@ List<PullRequest> parseOpenPullRequestReviews(String resBody) {
   }).toList();
 }
 
+// -------------------------------------------------------------------------------------
+// NON CHROMIUM AUTHOR CODE BELOW (the code below is under MIT license)
+
 int parseBranches(String resBody) {
-  int jsonRes = json.decode(resBody)['data']['repository']['refs']['totalCount'];
+  int jsonRes =
+      json.decode(resBody)['data']['repository']['refs']['totalCount'];
   return jsonRes;
 }
 
-int parseReleases (String resBody) {
-  int jsonRes = json.decode(resBody)['data']['repository']['refs']['totalCount'];
+int parseReleases(String resBody) {
+  int jsonRes =
+      json.decode(resBody)['data']['repository']['refs']['totalCount'];
   return jsonRes;
 }
 
 List<PullRequest> parsePullRequests(String resBody, String owner) {
-  List jsonRes = json.decode(resBody)['data']['repository']
-      ['pullRequests']['nodes'];
+  List jsonRes =
+      json.decode(resBody)['data']['repository']['pullRequests']['nodes'];
   // print('json');
   //print(jsonRes.toString());
 
@@ -75,8 +80,7 @@ List<PullRequest> parsePullRequests(String resBody, String owner) {
 }
 
 List<Issue> parseIssues(String resBody, String owner) {
-  List jsonRes = json.decode(resBody)['data']['repository']
-      ['issues']['nodes'];
+  List jsonRes = json.decode(resBody)['data']['repository']['issues']['nodes'];
 
   Map repoInfo = json.decode(resBody)['data']['repository'];
   Repository repo = Repository(repoInfo['name'], repoInfo['url'],
@@ -84,8 +88,14 @@ List<Issue> parseIssues(String resBody, String owner) {
 
   List<Issue> issues = [];
   for (var i = 0; i < jsonRes.length; i++) {
-    issues.add(Issue(jsonRes[i]['title'], jsonRes[i]['id'], jsonRes[i]['url'],
-        repo, jsonRes[i]['author']['login'], jsonRes[i]['state'], jsonRes[i]['number']));
+    issues.add(Issue(
+        jsonRes[i]['title'],
+        jsonRes[i]['id'],
+        jsonRes[i]['url'],
+        repo,
+        jsonRes[i]['author']['login'],
+        jsonRes[i]['state'],
+        jsonRes[i]['number']));
   }
   //print (issues.toString());
   return issues;
@@ -124,16 +134,16 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
         ));
       }
     } else if (temp.keys.contains('label')) {
-      prTimeline.add(LabeledEvent(pr, null, temp['id'], temp['label']['url'], "",
-          temp['actor']['login'], temp['label']['name']));
+      prTimeline.add(LabeledEvent(pr, null, temp['id'], temp['label']['url'],
+          "", temp['actor']['login'], temp['label']['name']));
     }
   }
   return prTimeline;
 }
 
 List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
-  List jsonRes = json.decode(resBody)['data']['repository']['issue']
-      ['timeline']['edges'];
+  List jsonRes =
+      json.decode(resBody)['data']['repository']['issue']['timeline']['edges'];
 
   List<TimelineItem> issueTimeline = [];
   for (var i = 0; i < jsonRes.length; i++) {
@@ -164,8 +174,14 @@ List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
         ));
       }
     } else if (temp.keys.contains('label')) {
-      issueTimeline.add(LabeledEvent(null, issue, temp['id'], temp['label']['url'], "",
-          temp['actor']['login'], temp['label']['name']));
+      issueTimeline.add(LabeledEvent(
+          null,
+          issue,
+          temp['id'],
+          temp['label']['url'],
+          "",
+          temp['actor']['login'],
+          temp['label']['name']));
     }
   }
   return issueTimeline;
