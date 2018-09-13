@@ -105,7 +105,7 @@ class DashboardState extends State<Dashboard> {
                               child: Center(
                                   child: Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child: Icon(Icons.timeline,
+                                child: Icon(Icons.label_outline,
                                     color: Colors.white, size: 30.0),
                               )))
                         ]),
@@ -123,7 +123,7 @@ class DashboardState extends State<Dashboard> {
                                 shape: CircleBorder(),
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
-                                  child: Icon(Icons.settings_applications,
+                                  child: Icon(const IconData(0xe801, fontFamily: 'GitIcons'),
                                       color: Colors.white, size: 30.0),
                                 )),
                             Padding(padding: EdgeInsets.only(bottom: 16.0)),
@@ -153,7 +153,7 @@ class DashboardState extends State<Dashboard> {
                                 shape: CircleBorder(),
                                 child: Padding(
                                   padding: EdgeInsets.all(16.0),
-                                  child: Icon(Icons.notifications,
+                                  child: Icon(Icons.error_outline,
                                       color: Colors.white, size: 30.0),
                                 )),
                             Padding(padding: EdgeInsets.only(bottom: 16.0)),
@@ -195,7 +195,7 @@ class DashboardState extends State<Dashboard> {
                               child: Center(
                                   child: Padding(
                                 padding: EdgeInsets.all(16.0),
-                                child: Icon(Icons.store,
+                                child: Icon(const IconData(0xe800, fontFamily: 'GitIcons'),
                                     color: Colors.white, size: 30.0),
                               )))
                         ]),
