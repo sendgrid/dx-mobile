@@ -35,7 +35,7 @@ If you run into some flutter doctor issues/errors, try running these commands:
 
 After installing Flutter, use Terminal or PowerShell and change directories to the dx_mobile directory you just cloned.
 
-```$ cd dx_mobile ```
+```$ cd dx-mobile ```
 
 Then, launch any emulator. See the Flutter setup page ([Mac](https://flutter.io/setup-macos/#ios-setup) | [Windows](https://flutter.io/setup-windows/#android-setup) | [Linux](https://flutter.io/setup-linux/#android-setup)) for instructions on how to set up your emulators (for Android emulators, you'll need to launch it initially from Android Studio's AVM). To start an iOS simulator, run this command:
 
@@ -47,11 +47,11 @@ To see the emulators you have open, run this command:
 
 ```$ flutter emulators```
 
-As an example, if you have an emulator called iphonex, type this in your terminal:
+As an example, if you have an emulator called pixel2, type this in your terminal:
 
-```$ flutter emulators --launch iphonex ```
+```$ flutter emulators --launch pixel2 ```
 
-After that, open the project directory up in any IDE and in the lib/github directory, create a file called token.dart and add what's below into the file. This will be used to authenticate with GitHub.
+After that, open the project directory up in any IDE and in the lib/github directory, create a file called `token.dart` (add this file to your .gitingore file) and add what's below into the file. This will be used to authenticate with GitHub.
 
 ```const token = 'YOUR_GITHUB_API_TOKEN';```
 
