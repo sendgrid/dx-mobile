@@ -308,7 +308,7 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
 }
 
 // adds a comment to an issue or PR
-Future<String> addComment(Issue issue, PullRequest pr, String commentBody) async {
+void addComment(Issue issue, PullRequest pr, String commentBody) async {
   // issue will be null if it's for a PullRequest
   // pr will be null if it's for an Issue
   String id = "";
