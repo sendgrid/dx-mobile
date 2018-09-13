@@ -1,8 +1,12 @@
+![SendGrid Logo](https://uiux.s3.amazonaws.com/2016-logos/email-logo%402x.png)</br>
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE.txt)
+
 # dx_mobile
 
 A new Flutter project to manage multiple high-demand repositories on the go.
 
 ## Credits and References
+
 Emily Fortuna - [Dude, where's my pull request?](https://github.com/efortuna/dwmpr)</br>
 Adrian Ivascu - [Dashboard concept](https://github.com/Ivaskuu/dashboard)</br>
 
