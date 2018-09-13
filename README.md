@@ -1,6 +1,10 @@
 # dx_mobile
 
-A new Flutter project.
+A new Flutter project to manage multiple high-demand repositories on the go.
+
+## Credits and References
+Emily Fortuna - [Dude, where's my pull request?](https://github.com/efortuna/dwmpr)</br>
+Adrian Ivascu - [Dashboard concept](https://github.com/Ivaskuu/dashboard)</br>
 
 ## Getting Started
 
