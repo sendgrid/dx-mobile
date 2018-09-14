@@ -70,3 +70,15 @@ Once your emulator is running, run the app! Flutter should automatically get the
 If you have multiple emulators running, you can run the app on all the devices at once by using this command.
 
 ```$ flutter run -d all ```
+
+
+<a name="about"></a>
+# About
+
+dx-mobile is primarily authored by Agnes Jang and guided and supported by the SendGrid [Developer Experience Team](mailto:dx@sendgrid.com).
+
+dx-mobile is maintained and funded by SendGrid, Inc. The names and logos for dx-mobile are trademarks of SendGrid, Inc.
+
+<a name="license"></a>
+# License
+[The MIT License (MIT)](LICENSE.txt)
