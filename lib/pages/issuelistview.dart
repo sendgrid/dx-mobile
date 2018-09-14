@@ -28,52 +28,48 @@ class IssueListViewState extends State<IssueListView> {
 
   Widget _createIssueListWidget(BuildContext context, List<Issue> issues) {
     return SmartRefresher(
-      enablePullDown: true,
-      onRefresh: _refreshIssueList,
-      controller: rc,
-      child: ListView(
-        children: issues
-            .map((issue) => Container(
-                    child: ListTile(
-                  title: Text("${issue.title} #${issue.number}"),
-                  subtitle: Text(issue.author),
-                  onTap: () {
-                    Future<List<TimelineItem>> timelines =
-                        getIssueTimeline(issue);
-                    // display them
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              IssueTimelineView(timelines, issue),
-                        ));
-                  },
-                )))
-            .toList(),
-    ));
+        enablePullDown: true,
+        onRefresh: _refreshIssueList,
+        controller: rc,
+        child: ListView(
+          children: issues
+              .map((issue) => Container(
+                      child: ListTile(
+                    title: Text("${issue.title} #${issue.number}"),
+                    subtitle: Text(issue.author),
+                    onTap: () {
+                      Future<List<TimelineItem>> timelines =
+                          getIssueTimeline(issue);
+                      // display them
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                IssueTimelineView(timelines, issue),
+                          ));
+                    },
+                  )))
+              .toList(),
+        ));
   }
 
   void _refreshIssueList(bool b) {
-      issueList = getIssues(widget.owner, widget.repoName);
-      //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
-      // can look into making this better later on
+    issueList = getIssues(widget.owner, widget.repoName);
+    //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
+    // can look into making this better later on
 
-    Navigator.pushReplacement(context, 
-      PageRouteBuilder(
-        pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondAnimation) {
-            return IssueListView(widget.owner, widget.repoName, issueList);
-          },
-        transitionsBuilder: (BuildContext context, Animation<double> animation, 
-        Animation<double> secondAnimation, Widget child) {
-          return FadeTransition(
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(pageBuilder: (BuildContext context,
+          Animation<double> animation, Animation<double> secondAnimation) {
+        return IssueListView(widget.owner, widget.repoName, issueList);
+      }, transitionsBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondAnimation, Widget child) {
+        return FadeTransition(
             opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
-            child: child
-          );
-        }
-
-        ),
-      );
+            child: child);
+      }),
+    );
     b = true;
   }
 
@@ -86,8 +82,9 @@ class IssueListViewState extends State<IssueListView> {
               enablePullDown: true,
               onRefresh: _refreshIssueList,
               controller: rc,
-              child: ListView(children: <Widget>[Text('No issues for you!')],)
-            );
+              child: ListView(
+                children: <Widget>[Text('No issues for you!')],
+              ));
     } else {
       return Center(child: CircularProgressIndicator());
     }
@@ -97,16 +94,13 @@ class IssueListViewState extends State<IssueListView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Issue List'),
-          leading: new IconButton(
-            icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )
-        ),
-        body:
-          FutureBuilder(future: issueList, builder: _buildIssueList));
+            title: Text('Issue List'),
+            leading: new IconButton(
+              icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )),
+        body: FutureBuilder(future: issueList, builder: _buildIssueList));
   }
-
 }

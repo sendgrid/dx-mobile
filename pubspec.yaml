@@ -40,6 +40,9 @@ flutter:
   #  - images/a_dot_ham.jpeg
 
   fonts:
+      - family: GitIcons
+        fonts:
+          - asset: assets/GitIcons.ttf
       - family: RobotoMono
         fonts:
           - asset: assets/RobotoMono-Medium.ttf

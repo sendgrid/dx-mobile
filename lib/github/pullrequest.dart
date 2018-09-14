@@ -1,11 +1,11 @@
 // Copyright 2018 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// found in the LICENSE file. (https://github.com/efortuna/dwmpr/blob/master/LICENSE)
 
 import 'repository.dart';
 
 class PullRequest {
-  // add PR number to this class 
+  // add PR number to this class (number variable was added to the original file)
   final Repository repo;
   final String id;
   final String url;

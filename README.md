@@ -1,6 +1,16 @@
+![SendGrid Logo](https://uiux.s3.amazonaws.com/2016-logos/email-logo%402x.png)</br>
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE.txt)
+
 # dx_mobile
 
-A new Flutter project.
+A new Flutter project to manage multiple high-demand repositories on the go.
+
+## Credits and References
+
+Emily Fortuna - [Dude, where's my pull request?](https://github.com/efortuna/dwmpr)</br>
+Adrian Ivascu - [Dashboard concept](https://github.com/Ivaskuu/dashboard)</br>
+Git Pull Request Icon (svg file) - original image owned by [GitHub](https://commons.wikimedia.org/wiki/File:Octicons-git-pull-request.svg)</br>
+Git Branch Icon (svg file) - original image owned by [GitHub](https://commons.wikimedia.org/wiki/File:Octicons-git-branch.svg)</br>
 
 ## Getting Started
 
@@ -51,7 +61,7 @@ As an example, if you have an emulator called pixel2, type this in your terminal
 
 ```$ flutter emulators --launch pixel2 ```
 
-After that, open the project directory up in any IDE and in the lib/github directory, create a file called `token.dart` (add this file to your .gitingore file) and add what's below into the file. This will be used to authenticate with GitHub.
+After that, open the project directory up in any IDE and in the lib/github directory, create a file called `token.dart` (add this file to your .gitignore file) and add what's below into the file. This will be used to authenticate with GitHub.
 
 ```const token = 'YOUR_GITHUB_API_TOKEN';```
 
@@ -62,3 +72,15 @@ Once your emulator is running, run the app! Flutter should automatically get the
 If you have multiple emulators running, you can run the app on all the devices at once by using this command.
 
 ```$ flutter run -d all ```
+
+
+<a name="about"></a>
+# About
+
+dx-mobile is primarily authored by Agnes Jang and guided and supported by the SendGrid [Developer Experience Team](mailto:dx@sendgrid.com).
+
+dx-mobile is maintained and funded by SendGrid, Inc. The names and logos for dx-mobile are trademarks of SendGrid, Inc.
+
+<a name="license"></a>
+# License
+[The MIT License (MIT)](LICENSE.txt)

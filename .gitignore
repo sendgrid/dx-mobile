@@ -15,5 +15,8 @@ pubspec.lock
 .history
 
 token.dart
+review_code.dart
+graphql_offline.dart
+
 
 docker-compose.yml.1
