@@ -9,6 +9,8 @@ A new Flutter project to manage multiple high-demand repositories on the go.
 
 Emily Fortuna - [Dude, where's my pull request?](https://github.com/efortuna/dwmpr)</br>
 Adrian Ivascu - [Dashboard concept](https://github.com/Ivaskuu/dashboard)</br>
+Git Pull Request Icon (svg file) - original image owned by [GitHub](https://commons.wikimedia.org/wiki/File:Octicons-git-pull-request.svg)</br>
+Git Branch Icon (svg file) - original image owned by [GitHub](https://commons.wikimedia.org/wiki/File:Octicons-git-branch.svg)</br>
 
 ## Getting Started
 
