@@ -9,6 +9,7 @@ import 'github/issue.dart';
 
 import 'review_code.dart';
 import 'pages/dashboard.dart';
+import 'pages/repolist.dart';
 
 void main() => runApp(MyApp());
 
@@ -37,8 +38,8 @@ class MyAppState extends State<MyApp> {
             brightness: Brightness.light,
             primarySwatch: Colors.blue,
             accentColor: Colors.black45),
-        home: Dashboard(
-            owner, repoName, prList, issueList, numBranches, numReleases),
+        home: RepoList(),//Dashboard(
+        //     owner, repoName, prList, issueList, numBranches, numReleases),
         routes: {
           // probably can't have routes here besides login and home dashboard
           // because you need to update the PRList yourself
