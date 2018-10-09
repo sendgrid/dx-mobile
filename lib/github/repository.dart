@@ -3,12 +3,23 @@
 // found in the LICENSE file. (https://github.com/efortuna/dwmpr/blob/master/LICENSE)
 
 class Repository {
+  // ORIGINAL CHROMIUM AUTHOR CODE
   final String name;
-  final String url;
-  final String organization;
-  final int starCount;
+  //final String url;
 
-  Repository(this.name, this.url, this.starCount, this.organization);
+  // NON-CHROMIUM AUTHOR CODE
+  final String nameWithOwner;
 
-  String toString() => '$name, $url, $starCount';
+  Repository(this.name, this.nameWithOwner);
+  
+  String toString() => 'Repository: $nameWithOwner';
+
+
+  // ORIGINAL CHROMIUM AUTHOR CODE NOT BEING USED
+  // final String organization;
+  // final int starCount;
+
+  // Repository(this.name, this.url, this.starCount, this.organization);
+
+  // String toString() => '$name, $url, $starCount';
 }

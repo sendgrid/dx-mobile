@@ -19,88 +19,85 @@ User parseUser(String resBody) {
 }
 
 /// Parses a Github GraphQL pull request reviews response
-/// // NOT USED
-List<PullRequest> parseOpenPullRequestReviews(String resBody) {
-  List jsonRes = json.decode(resBody)['data']['search']['edges'];
-  return jsonRes.map((edge) {
-    final node = edge['node'];
-    final orgName = node['organization']['login'];
-    final repoName = node['repository']['name'];
-    final repoUrl = node['repository']['url'];
-    final repoStarCount = node['repository']['stargazers']['totalCount'];
-    final repo = Repository(repoName, repoUrl, orgName, repoStarCount);
+/// NOT USED
+// List<PullRequest> parseOpenPullRequestReviews(String resBody) {
+//   List jsonRes = json.decode(resBody)['data']['search']['edges'];
+//   return jsonRes.map((edge) {
+//     final node = edge['node'];
+//     final orgName = node['organization']['login'];
+//     final repoName = node['repository']['name'];
+//     final repoUrl = node['repository']['url'];
+//     final repoStarCount = node['repository']['stargazers']['totalCount'];
+//     final repo = Repository(repoName, repoUrl, orgName, repoStarCount);
 
-    final prId = node['id'];
-    final prTitle = node['title'];
-    final prUrl = node['url'];
-    final pr = PullRequest(prId, prTitle, prUrl, repo, '', 0);
+//     final prId = node['id'];
+//     final prTitle = node['title'];
+//     final prUrl = node['url'];
+//     final pr = PullRequest(prId, prTitle, prUrl, repo, '', 0);
 
-    return pr;
-  }).toList();
-}
+//     return pr;
+//   }).toList();
+// }
 
 // -------------------------------------------------------------------------------------
 // NON CHROMIUM AUTHOR CODE BELOW (the code below is under MIT license)
 
+// parseBranches parses the result from the GraphQL query for fetching the # of branches
 int parseBranches(String resBody) {
   int jsonRes =
       json.decode(resBody)['data']['repository']['refs']['totalCount'];
   return jsonRes;
 }
 
+// parseReleases parses the result from the GraphQL query for fetching the # of releases
 int parseReleases(String resBody) {
   int jsonRes =
       json.decode(resBody)['data']['repository']['refs']['totalCount'];
   return jsonRes;
 }
 
-List<PullRequest> parsePullRequests(String resBody, String owner) {
+// parsePullRequests parses the result from the GraphQL query for fetching the PRs for a repo
+List<PullRequest> parsePullRequests(String resBody, String owner, String repoName) {
   List jsonRes =
-      json.decode(resBody)['data']['repository']['pullRequests']['nodes'];
-  // print('json');
-  //print(jsonRes.toString());
+    json.decode(resBody)['data']['search']['edges'];
 
-  Map repoInfo = json.decode(resBody)['data']['repository'];
-  //print(repoInfo['stargazers']);
-  Repository repo = Repository(repoInfo['name'], repoInfo['url'],
-      repoInfo['stargazers']['totalCount'], owner);
+  Repository repo = Repository(repoName, owner + "/" + repoName);
 
   List<PullRequest> prs = [];
   for (var i = 0; i < jsonRes.length; i++) {
     prs.add(PullRequest(
-        jsonRes[i]['id'],
-        jsonRes[i]['title'],
-        jsonRes[i]['url'],
-        repo,
-        jsonRes[i]['author']['login'],
-        jsonRes[i]['number']));
+      jsonRes[i]['node']['id'],
+      jsonRes[i]['node']['title'],
+      jsonRes[i]['node']['url'],
+      repo,
+      jsonRes[i]['node']['author']['login'],
+      jsonRes[i]['node']['number']));
   }
 
   return prs;
 }
 
-List<Issue> parseIssues(String resBody, String owner) {
-  List jsonRes = json.decode(resBody)['data']['repository']['issues']['nodes'];
-
-  Map repoInfo = json.decode(resBody)['data']['repository'];
-  Repository repo = Repository(repoInfo['name'], repoInfo['url'],
-      repoInfo['stargazers']['totalCount'], owner);
+// parseIssues parses the result from the GraphQL query for fetching the issues for a repo
+List<Issue> parseIssues(String resBody, String owner, String repoName) {
+  List jsonRes = json.decode(resBody)['data']['search']['edges'];
+  Repository repo = Repository(repoName, owner + "/" + repoName);
 
   List<Issue> issues = [];
   for (var i = 0; i < jsonRes.length; i++) {
     issues.add(Issue(
-        jsonRes[i]['title'],
-        jsonRes[i]['id'],
-        jsonRes[i]['url'],
-        repo,
-        jsonRes[i]['author']['login'],
-        jsonRes[i]['state'],
-        jsonRes[i]['number']));
+      jsonRes[i]['node']['title'],
+      jsonRes[i]['node']['id'],
+      jsonRes[i]['node']['url'],
+      repo,
+      jsonRes[i]['node']['author']['login'],
+      jsonRes[i]['node']['state'],
+      jsonRes[i]['node']['number']
+    ));
   }
-  //print (issues.toString());
   return issues;
 }
 
+// parsePRTimeline parses the result from the GraphQL query for fetching the timeline for a PR
 List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
   List jsonRes = json.decode(resBody)['data']['repository']['pullRequest']
       ['timeline']['edges'];
@@ -141,6 +138,7 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
   return prTimeline;
 }
 
+// parseIssueTimeline parses the result from the GraphQL query for fetching the timeline for an issue
 List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
   List jsonRes =
       json.decode(resBody)['data']['repository']['issue']['timeline']['edges'];
@@ -186,3 +184,18 @@ List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
   }
   return issueTimeline;
 }
+
+// parseUserRepos parses the result from the GraphQL query for fetching the repositories for a user
+List<Repository> parseUserRepos(String resBody) {
+  List jsonRes =
+    json.decode(resBody)['data']['viewer']['repositories']['nodes'];
+  
+  List<Repository> repos = [];
+
+  for (var i = 0; i < jsonRes.length; i++) {
+    repos.add(Repository(jsonRes[i]['name'], jsonRes[i]['nameWithOwner']));
+  }
+
+  return repos;
+}
+

@@ -52,36 +52,36 @@ Future<User> currentUser() async {
 }
 
 /// Fetches all PR review requests for the logged in user
-Future<List<PullRequest>> openPullRequestReviews(String login) async {
-  final query = '''
-    query GetOpenReviewRequests {
-      search(query: "type:pr state:open review-requested:$login", type: ISSUE, first: 100) {
-        issueCount
-        pageInfo {
-          endCursor
-          startCursor
-        }
-        edges {
-          node {
-            ... on PullRequest {
-              repository {
-                name
-                url
-                stargazers(first: 1) {
-                  totalCount
-                }
-              }
-              title
-              id
-              url
-            }
-          }
-        }
-      }
-    }''';
-  final result = await _query(query);
-  return parseOpenPullRequestReviews(result);
-}
+// Future<List<PullRequest>> openPullRequestReviews(String login) async {
+//   final query = '''
+//     query GetOpenReviewRequests {
+//       search(query: "type:pr state:open review-requested:$login", type: ISSUE, first: 100) {
+//         issueCount
+//         pageInfo {
+//           endCursor
+//           startCursor
+//         }
+//         edges {
+//           node {
+//             ... on PullRequest {
+//               repository {
+//                 name
+//                 url
+//                 stargazers(first: 1) {
+//                   totalCount
+//                 }
+//               }
+//               title
+//               id
+//               url
+//             }
+//           }
+//         }
+//       }
+//     }''';
+//   final result = await _query(query);
+//   return parseOpenPullRequestReviews(result);
+// }
 
 addEmoji(String id, String reaction) async {
   var query = '''
@@ -119,10 +119,22 @@ getDiff(PullRequest pullRequest) async {
   return response.body;
 }
 
+/// Sends a GraphQL query to Github and returns raw response
+Future<String> _query(String query) async {
+  final gqlQuery = json.encode({'query': _removeSpuriousSpacing(query)});
+  final response = await http.post(url, headers: headers, body: gqlQuery);
+  return response.statusCode == 200
+      ? response.body
+      : throw Exception('Error: ${response.statusCode}');
+}
+
+_removeSpuriousSpacing(String str) => str.replaceAll(RegExp(r'\s+'), ' ');
+
+
 // -------------------------------------------------------------------------------------
 // NON CHROMIUM AUTHOR CODE BELOW (the code below is under MIT license)
 
-// retrieves number of branches in a repo
+// getBranches retrieves the number of branches in a repo
 Future<int> getBranches(String owner, String repoName) async {
   final query = '''
     query {
@@ -138,7 +150,7 @@ Future<int> getBranches(String owner, String repoName) async {
   return parseBranches(result);
 }
 
-// retrieves number of releases in a repo
+// getReleases retrieves the number of releases in a repo
 Future<int> getReleases(String owner, String repoName) async {
   final query = '''
     query {
@@ -154,69 +166,67 @@ Future<int> getReleases(String owner, String repoName) async {
   return parseReleases(result);
 }
 
-// query for obtaining PRs for an organization
+// getPRs retrieves pull requests from a given repo/owner
 Future<List<PullRequest>> getPRs(String owner, String repoName) async {
-  final query = '''
-      query {
-        repository(owner: "$owner", name: "$repoName") {
-          pullRequests(last: 100, states: [OPEN], orderBy: {field: CREATED_AT, direction: DESC}) {
-            nodes {
-              author {
-                login
-              }
-              title
-              url
-              id
-              number
+  final query = 
+  '''
+  query { 
+    search (query: "type:pr state:open repo:$owner/$repoName", type: ISSUE, first: 100){
+      edges {
+        node {
+          ... on PullRequest {
+            url
+            title
+            id
+            number
+            author {
+              login
             }
           }
-          name
-          url
-          stargazers(first: 1) {
-            totalCount
-          }
-        }
+        } 
       }
+    }
+  }
   ''';
+
   final result = await _query(query);
-  // print(result.toString());
-  return parsePullRequests(result, owner);
+  return parsePullRequests(result, owner, repoName);
 }
 
-// query to get issues for an organization's repo
+// getIssues retrieves the open issues for a given repo
 Future<List<Issue>> getIssues(String owner, String repoName) async {
-  final query = '''
-      query {
-        repository(owner: "$owner", name: "$repoName") {
-          issues(last: 100, states: [OPEN], orderBy: {field: CREATED_AT, direction: DESC}) {
-            nodes {
-              author {
-                login
-              }
-              title
-              url
-              id
-              state
-              number
+  final query = 
+  '''
+  query { 
+    search (query: "type:issue state:open repo:$owner/$repoName", type: ISSUE, first: 100){
+      edges {
+        node {
+          ... on Issue {
+            url
+            title
+            id
+            number
+            state
+            author {
+              login
             }
           }
-          name
-          url
-          stargazers(first: 1) {
-            totalCount
-          }
-        }
+        } 
       }
+    }
+  }
   ''';
+
   final result = await _query(query);
-  return parseIssues(result, owner);
+  return parseIssues(result, owner, repoName);
 }
 
-// query to get timeline from a specific PR of an organization's repo
+// getPRTimeline retrieves timeline from a specific PR of an organization's repo
 Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
+  String owner = pullRequest.repo.nameWithOwner.split("/")[0];
   final query = '''
     query {
-      repository(owner: "${pullRequest.repo.organization}", name: "${pullRequest.repo.name}") {
+      repository(owner: "$owner", name: "${pullRequest.repo.name}") {
         pullRequest(number: ${pullRequest.number}) {
           timeline(last: 100) {
             edges {
@@ -260,11 +270,12 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
   return parsePRTimeline(result, pullRequest);
 }
 
-// retrieves timeline for a specific issue
+// getIssueTimeline retrieves a timeline for a specific issue
 Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
+  String owner = issue.repo.nameWithOwner.split("/")[0];
   final query = '''
     query {
-      repository(owner: "${issue.repo.organization}", name: "${issue.repo.name}") {
+      repository(owner: "$owner", name: "${issue.repo.name}") {
         issue(number: ${issue.number}) {
           timeline(last: 100) {
             edges {
@@ -308,7 +319,7 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
   return parseIssueTimeline(result, issue);
 }
 
-// adds a comment to an issue or PR
+// addComment adds a comment to a issue/pr
 void addComment(Issue issue, PullRequest pr, String commentBody) async {
   // issue will be null if it's for a PullRequest
   // pr will be null if it's for an Issue
@@ -340,13 +351,23 @@ void addComment(Issue issue, PullRequest pr, String commentBody) async {
   print(result);
 }
 
-/// Sends a GraphQL query to Github and returns raw response
-Future<String> _query(String query) async {
-  final gqlQuery = json.encode({'query': _removeSpuriousSpacing(query)});
-  final response = await http.post(url, headers: headers, body: gqlQuery);
-  return response.statusCode == 200
-      ? response.body
-      : throw Exception('Error: ${response.statusCode}');
+// fetchUserRepos retrieves the repositories that the viewer has contributed to
+Future<List<Repository>> fetchUserRepos() async{
+  final query = '''
+  query {
+    viewer {
+      login
+      repositories(last:100) {
+        nodes {
+          name 
+          url
+          nameWithOwner
+        }
+      }
+    }
+  }
+  ''';
+  final result = await _query(query);
+  return parseUserRepos(result);
 }
 
-_removeSpuriousSpacing(String str) => str.replaceAll(RegExp(r'\s+'), ' ');

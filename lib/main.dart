@@ -38,7 +38,7 @@ class MyAppState extends State<MyApp> {
             brightness: Brightness.light,
             primarySwatch: Colors.blue,
             accentColor: Colors.black45),
-        home: RepoList(),//Dashboard(
+        home: RepoListView(graphql.fetchUserRepos()),//Dashboard(
         //     owner, repoName, prList, issueList, numBranches, numReleases),
         routes: {
           // probably can't have routes here besides login and home dashboard
