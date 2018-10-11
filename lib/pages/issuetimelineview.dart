@@ -40,43 +40,45 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
               IssueComment tmp = timeline[idx];
               return ListTile(
                   leading: Text(tmp.author),
-                  title: Text(tmp.url),
-                  subtitle: Text(tmp.body));
+                  // title: Text(tmp.url),
+                  title: Text(tmp.body));
             } else if (timeline[idx].runtimeType == Commit) {
               Commit tmp = timeline[idx];
               return ListTile(
                   leading: Text(tmp.author),
-                  title: Text(tmp.url),
-                  subtitle: Text(tmp.message));
+                  // title: Text(tmp.url),
+                  title: Text(tmp.message));
             } else if (timeline[idx].runtimeType == LabeledEvent) {
               LabeledEvent tmp = timeline[idx];
               return ListTile(
                   leading: Text(tmp.author),
-                  title: Text(tmp.url),
-                  subtitle: Text(tmp.labelName));
+                  // title: Text(tmp.url),
+                  title: Text(tmp.labelName));
             }
           },
         ));
   }
 
   void _refreshIssueTimelineList(bool b) {
-    issueTimelineList = getIssueTimeline(widget.issue);
-    //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
-    // can look into making this better later on
+    setState(() {
+      issueTimelineList = getIssueTimeline(widget.issue);
+      //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
+      // can look into making this better later on
 
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(pageBuilder: (BuildContext context,
-          Animation<double> animation, Animation<double> secondAnimation) {
-        return IssueTimelineView(issueTimelineList, widget.issue);
-      }, transitionsBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondAnimation, Widget child) {
-        return FadeTransition(
-            opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
-            child: child);
-      }),
-    );
-    b = true;
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(pageBuilder: (BuildContext context,
+            Animation<double> animation, Animation<double> secondAnimation) {
+          return IssueTimelineView(issueTimelineList, widget.issue);
+        }, transitionsBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondAnimation, Widget child) {
+          return FadeTransition(
+              opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
+              child: child);
+        }),
+      );
+      b = true;   
+      });
   }
 
   Widget _buildIssueTimelineList(
@@ -139,6 +141,24 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
                 onPressed: () {
                   if (comment != null) {
                     addComment(widget.issue, null, comment);
+                    // setState(() {
+                    //   issueTimelineList = getIssueTimeline(widget.issue);
+                    //   //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
+                    //   // can look into making this better later on
+
+                    //   Navigator.pushReplacement(
+                    //     context,
+                    //     PageRouteBuilder(pageBuilder: (BuildContext context,
+                    //         Animation<double> animation, Animation<double> secondAnimation) {
+                    //       return IssueTimelineView(issueTimelineList, widget.issue);
+                    //     }, transitionsBuilder: (BuildContext context, Animation<double> animation,
+                    //         Animation<double> secondAnimation, Widget child) {
+                    //       return FadeTransition(
+                    //           opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
+                    //           child: child);
+                    //     }),
+                    //   );
+                    //   });
                   }
                   _textEditingController.clear();
                 },

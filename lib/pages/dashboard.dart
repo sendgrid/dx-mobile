@@ -62,6 +62,11 @@ class DashboardState extends State<Dashboard> {
                   color: Colors.black,
                   fontWeight: FontWeight.w700,
                   fontSize: 30.0)),
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColorDark),
+            onPressed: (){
+              Navigator.pop(context);
+            })
         ),
         body: SmartRefresher(
             enablePullDown: true,
