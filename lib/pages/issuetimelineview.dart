@@ -125,7 +125,11 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
                       onSubmitted: (String c) {
                         comment = c;
                         if (comment != null) {
-                          addComment(widget.issue, null, comment);
+                          addComment(widget.issue, null, comment).then(
+                            (IssueComment comment) {
+                               _refreshIssueTimelineList(true);
+                            }
+                          );
                         }
                         _textEditingController.clear();
                       }),
@@ -140,25 +144,11 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
                 color: Theme.of(context).primaryColorLight,
                 onPressed: () {
                   if (comment != null) {
-                    addComment(widget.issue, null, comment);
-                    // setState(() {
-                    //   issueTimelineList = getIssueTimeline(widget.issue);
-                    //   //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
-                    //   // can look into making this better later on
-
-                    //   Navigator.pushReplacement(
-                    //     context,
-                    //     PageRouteBuilder(pageBuilder: (BuildContext context,
-                    //         Animation<double> animation, Animation<double> secondAnimation) {
-                    //       return IssueTimelineView(issueTimelineList, widget.issue);
-                    //     }, transitionsBuilder: (BuildContext context, Animation<double> animation,
-                    //         Animation<double> secondAnimation, Widget child) {
-                    //       return FadeTransition(
-                    //           opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
-                    //           child: child);
-                    //     }),
-                    //   );
-                    //   });
+                    addComment(widget.issue, null, comment).then(
+                      (IssueComment comment) {
+                          _refreshIssueTimelineList(true);
+                      }
+                    );
                   }
                   _textEditingController.clear();
                 },

@@ -229,3 +229,11 @@ List<Repository> parseUserRepos(String resBody) {
   return repos;
 }
 
+// parseAddedComment parses the response received after calling addComment mutation
+IssueComment parseAddedComment(String resBody, PullRequest pr, Issue issue){
+  Map jsonRes = json.decode(resBody)['data']['addComment']['commentEdge']['node'];
+  Map jsonTemp = json.decode(resBody)['data']['addComment'];
+
+  return IssueComment(pr, issue, "", jsonRes['url'], 
+  jsonTemp['subject']['id'], jsonRes['author']['login'], jsonRes['bodyText']);
+}
