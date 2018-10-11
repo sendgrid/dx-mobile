@@ -65,13 +65,28 @@ List<PullRequest> parsePullRequests(String resBody, String owner, String repoNam
 
   List<PullRequest> prs = [];
   for (var i = 0; i < jsonRes.length; i++) {
-    prs.add(PullRequest(
-      jsonRes[i]['node']['id'],
-      jsonRes[i]['node']['title'],
-      jsonRes[i]['node']['url'],
-      repo,
-      jsonRes[i]['node']['author']['login'],
-      jsonRes[i]['node']['number']));
+    try {
+      prs.add(PullRequest(
+        jsonRes[i]['node']['id'],
+        jsonRes[i]['node']['title'],
+        jsonRes[i]['node']['url'],
+        repo,
+        jsonRes[i]['node']['author']['login'],
+        jsonRes[i]['node']['number']
+      ));
+    } catch(e) {
+      if (e == NoSuchMethodError) {
+        prs.add(PullRequest(
+          jsonRes[i]['node']['id'],
+          jsonRes[i]['node']['title'],
+          jsonRes[i]['node']['url'],
+          repo,
+          "ghost",
+          jsonRes[i]['node']['number']
+        ));
+      }
+    }
+
   }
 
   return prs;
@@ -84,15 +99,30 @@ List<Issue> parseIssues(String resBody, String owner, String repoName) {
 
   List<Issue> issues = [];
   for (var i = 0; i < jsonRes.length; i++) {
-    issues.add(Issue(
-      jsonRes[i]['node']['title'],
-      jsonRes[i]['node']['id'],
-      jsonRes[i]['node']['url'],
-      repo,
-      jsonRes[i]['node']['author']['login'],
-      jsonRes[i]['node']['state'],
-      jsonRes[i]['node']['number']
-    ));
+    try {
+      issues.add(Issue(
+        jsonRes[i]['node']['title'],
+        jsonRes[i]['node']['id'],
+        jsonRes[i]['node']['url'],
+        repo,
+        jsonRes[i]['node']['author']['login'],
+        jsonRes[i]['node']['state'],
+        jsonRes[i]['node']['number']
+      ));
+    } catch(e) {
+      if (e == NoSuchMethodError){
+      issues.add(Issue(
+        jsonRes[i]['node']['title'],
+        jsonRes[i]['node']['id'],
+        jsonRes[i]['node']['url'],
+        repo,
+        "ghost",
+        jsonRes[i]['node']['state'],
+        jsonRes[i]['node']['number']
+      ));
+      }
+    }
+
   }
   return issues;
 }
