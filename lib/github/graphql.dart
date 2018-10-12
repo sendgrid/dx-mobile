@@ -320,7 +320,7 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
 }
 
 // addComment adds a comment to a issue/pr
-void addComment(Issue issue, PullRequest pr, String commentBody) async {
+Future<IssueComment> addComment(Issue issue, PullRequest pr, String commentBody) async {
   // issue will be null if it's for a PullRequest
   // pr will be null if it's for an Issue
   String id = "";
@@ -338,6 +338,7 @@ void addComment(Issue issue, PullRequest pr, String commentBody) async {
           author {
             login
           }
+          url
         }
       }
       subject {
@@ -348,7 +349,8 @@ void addComment(Issue issue, PullRequest pr, String commentBody) async {
   ''';
 
   final result = await _query(mutation);
-  print(result);
+  return parseAddedComment(result, pr, issue);
+
 }
 
 // fetchUserRepos retrieves the repositories that the viewer has contributed to

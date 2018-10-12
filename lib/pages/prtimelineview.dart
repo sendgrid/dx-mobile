@@ -124,7 +124,11 @@ class PRTimelineViewState extends State<PRTimelineView> {
                       onSubmitted: (String c) {
                         comment = c;
                         if (comment != null) {
-                          addComment(null, widget.pr, comment);
+                          addComment(null, widget.pr, comment).then(
+                            (IssueComment comment) {
+                                _refreshPRTimelineList(true);
+                            }
+                          );
                           _refreshPRTimelineList(true);
                         }
                         _textEditingController.clear();
@@ -140,8 +144,11 @@ class PRTimelineViewState extends State<PRTimelineView> {
                 color: Theme.of(context).primaryColorLight,
                 onPressed: () {
                   if (comment != null) {
-                    addComment(null, widget.pr, comment);
-                    _refreshPRTimelineList(true);
+                    addComment(null, widget.pr, comment).then(
+                      (IssueComment comment) {
+                          _refreshPRTimelineList(true);
+                      }
+                    );
                   }
                   _textEditingController.clear();
                 },
