@@ -168,9 +168,9 @@ Future<int> getReleases(String owner, String repoName) async {
 
 // getPRs retrieves pull requests from a given repo/owner
 Future<List<PullRequest>> getPRs(String owner, String repoName) async {
-  final query = 
+  final query =
   '''
-  query { 
+  query {
     search (query: "type:pr state:open repo:$owner/$repoName", type: ISSUE, first: 100){
       edges {
         node {
@@ -183,7 +183,7 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
               login
             }
           }
-        } 
+        }
       }
     }
   }
@@ -195,9 +195,9 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
 
 // getIssues retrieves the open issues for a given repo
 Future<List<Issue>> getIssues(String owner, String repoName) async {
-  final query = 
+  final query =
   '''
-  query { 
+  query {
     search (query: "type:issue state:open repo:$owner/$repoName", type: ISSUE, first: 100){
       edges {
         node {
@@ -211,7 +211,7 @@ Future<List<Issue>> getIssues(String owner, String repoName) async {
               login
             }
           }
-        } 
+        }
       }
     }
   }
@@ -361,7 +361,7 @@ Future<List<Repository>> fetchUserRepos() async{
       login
       repositories(last:100) {
         nodes {
-          name 
+          name
           url
           nameWithOwner
         }
