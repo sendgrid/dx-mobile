@@ -9,8 +9,15 @@ class Issue {
   final String issueState;
   final int number;
 
-  Issue(this.title, this.id, this.url, this.repo, this.author, this.issueState,
-      this.number);
+  Issue(
+    this.title,
+    this.id,
+    this.url,
+    this.repo,
+    this.author,
+    this.issueState,
+    this.number,
+  );
 
   String toString() =>
       '$title, $id, $url, $repo, $author, $issueState, $number';
