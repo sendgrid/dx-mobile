@@ -5,6 +5,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../github/graphql.dart';
 import '../github/issue.dart';
 import '../github/timeline.dart';
+import '../common/timeline_widgets.dart';
 
 class IssueTimelineView extends StatefulWidget {
   final Future<List<TimelineItem>> issueTimelineList;
@@ -41,9 +42,20 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
         Container(
           child: Row(
             children: <Widget>[
-              _buildCommentTextbox(),
+              buildCommentTextbox(
+                context: context,
+                textEditingController: _textEditingController,
+                onChanged: (String c) => comment = c,
+                onSubmitted: (String c) {
+                  comment = c;
+                  addCommentToIssue();
+                },
+              ),
               SizedBox(width: MediaQuery.of(context).size.width / 12),
-              _buildSubmitCommentButton(),
+              buildSubmitCommentButton(
+                context: context,
+                onPressed: addCommentToIssue,
+              ),
               Padding(padding: EdgeInsets.only(left: 20.0)),
             ],
           ),
@@ -51,48 +63,6 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
       ]),
     );
   }
-
-  Widget _buildCommentTextbox() => Expanded(
-        child: Container(
-          padding: EdgeInsets.only(left: 10.0),
-          width: MediaQuery.of(context).size.width * 5 / 8,
-          child: TextField(
-            controller: _textEditingController,
-            decoration: InputDecoration(
-              labelText: " Enter comment here",
-            ),
-            keyboardType: TextInputType.multiline,
-            maxLines: 2,
-            onChanged: (String c) => comment = c,
-            onSubmitted: (String c) {
-              comment = c;
-              if (comment != null) {
-                addComment(widget.issue, null, comment).then(
-                  (IssueComment comment) {
-                    _refreshIssueTimelineList(true);
-                  },
-                );
-              }
-              _textEditingController.clear();
-            },
-          ),
-        ),
-      );
-
-  Widget _buildSubmitCommentButton() => RaisedButton(
-        child: Text("Comment"),
-        color: Theme.of(context).primaryColorLight,
-        onPressed: () {
-          if (comment != null) {
-            addComment(widget.issue, null, comment).then(
-              (IssueComment comment) {
-                _refreshIssueTimelineList(true);
-              },
-            );
-          }
-          _textEditingController.clear();
-        },
-      );
 
   Widget _buildIssueTimelineList(
     BuildContext context,
@@ -123,7 +93,7 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
       controller: rc,
       child: ListView.builder(
         itemCount: timeline.length,
-        itemBuilder: (_, int index) => _buildTimelineItem(timeline[index]),
+        itemBuilder: (_, int index) => buildTimelineItem(timeline[index]),
       ),
     );
   }
@@ -162,28 +132,14 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
     });
   }
 
-  Widget _buildTimelineItem(TimelineItem timelineItem) {
-    switch (timelineItem.runtimeType) {
-      case IssueComment:
-        IssueComment temp = timelineItem;
-        return ListTile(
-          leading: Text(temp.author),
-          title: Text(temp.body),
-        );
-      case Commit:
-        Commit temp = timelineItem;
-        return ListTile(
-          leading: Text(temp.author),
-          title: Text(temp.message),
-        );
-      case LabeledEvent:
-        LabeledEvent temp = timelineItem;
-        return ListTile(
-          leading: Text(temp.author),
-          title: Text(temp.labelName),
-        );
-      default:
-        return ErrorWidget(Exception("Unknown TimelineItem type"));
+  void addCommentToIssue() {
+    if (comment != null) {
+      addComment(widget.issue, null, comment).then(
+        (IssueComment comment) {
+          _refreshIssueTimelineList(true);
+        },
+      );
     }
+    _textEditingController.clear();
   }
 }
