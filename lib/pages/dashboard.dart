@@ -397,7 +397,7 @@ class _DashboardState extends State<Dashboard> {
   }
 }
 
-// Displays the user's login and avatar
+/// Displays the user's login and avatar
 class UserBanner extends StatelessWidget {
   final User user;
   UserBanner(this.user);
