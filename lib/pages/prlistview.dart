@@ -19,9 +19,8 @@ class PRListView extends StatefulWidget {
   );
 
   @override
-  State<StatefulWidget> createState() {
-    return PRListViewState(prList);
-  }
+  State<StatefulWidget> createState() => PRListViewState(prList);
+
 }
 
 class PRListViewState extends State<PRListView> {
