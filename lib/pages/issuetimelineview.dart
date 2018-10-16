@@ -77,7 +77,7 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
               child: child);
         }),
       );
-      b = true;   
+      b = true;
       });
   }
 
