@@ -1,4 +1,5 @@
 import 'repository.dart';
+import 'label.dart';
 
 class Issue {
   final Repository repo;
@@ -8,6 +9,7 @@ class Issue {
   final String author;
   final String issueState;
   final int number;
+  final List<Label> labels;
 
   Issue(
     this.title,
@@ -17,8 +19,9 @@ class Issue {
     this.author,
     this.issueState,
     this.number,
+    this.labels
   );
 
   String toString() =>
-      '$title, $id, $url, $repo, $author, $issueState, $number';
+      '$title, $id, $url, $repo, $author, $issueState, $number, $labels';
 }

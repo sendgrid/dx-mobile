@@ -10,6 +10,7 @@ import 'issue.dart';
 import 'repository.dart';
 import 'timeline.dart';
 import 'user.dart';
+import 'label.dart';
 
 /// Parses a Github GraphQL user response
 User parseUser(String resBody) {
@@ -66,29 +67,45 @@ List<PullRequest> parsePullRequests(String resBody, String owner, String repoNam
   List<PullRequest> prs = [];
   for (var i = 0; i < jsonRes.length; i++) {
     try {
+      List<Label> labels = [];
+      if (jsonRes[i]['node']['labels']['nodes'].length != 0){
+        for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++){
+          labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'], jsonRes[i]['node']['labels']['nodes'][j]['color']));
+        }
+      }
+
       prs.add(PullRequest(
         jsonRes[i]['node']['id'],
         jsonRes[i]['node']['title'],
         jsonRes[i]['node']['url'],
         repo,
         jsonRes[i]['node']['author']['login'],
-        jsonRes[i]['node']['number']
+        jsonRes[i]['node']['number'],
+        labels
       ));
+
     } catch(e) {
       if (e == NoSuchMethodError) {
+        List<Label> labels = [];
+        if (jsonRes[i]['node']['labels']['nodes'].length != 0){
+          for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++){
+            labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'], jsonRes[i]['node']['labels']['nodes'][j]['color']));
+          }
+        }
+
         prs.add(PullRequest(
           jsonRes[i]['node']['id'],
           jsonRes[i]['node']['title'],
           jsonRes[i]['node']['url'],
           repo,
           "ghost",
-          jsonRes[i]['node']['number']
+          jsonRes[i]['node']['number'],
+          labels
         ));
       }
     }
 
   }
-
   return prs;
 }
 
@@ -100,6 +117,13 @@ List<Issue> parseIssues(String resBody, String owner, String repoName) {
   List<Issue> issues = [];
   for (var i = 0; i < jsonRes.length; i++) {
     try {
+      List<Label> labels = [];
+      if (jsonRes[i]['node']['labels']['nodes'].length != 0){
+        for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++){
+          labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'], jsonRes[i]['node']['labels']['nodes'][j]['color']));
+        }
+      }
+
       issues.add(Issue(
         jsonRes[i]['node']['title'],
         jsonRes[i]['node']['id'],
@@ -107,22 +131,30 @@ List<Issue> parseIssues(String resBody, String owner, String repoName) {
         repo,
         jsonRes[i]['node']['author']['login'],
         jsonRes[i]['node']['state'],
-        jsonRes[i]['node']['number']
+        jsonRes[i]['node']['number'],
+        labels
       ));
     } catch(e) {
       if (e == NoSuchMethodError){
-      issues.add(Issue(
-        jsonRes[i]['node']['title'],
-        jsonRes[i]['node']['id'],
-        jsonRes[i]['node']['url'],
-        repo,
-        "ghost",
-        jsonRes[i]['node']['state'],
-        jsonRes[i]['node']['number']
-      ));
+        List<Label> labels = [];
+        if (jsonRes[i]['node']['labels']['nodes'].length != 0){
+          for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++){
+            labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'], jsonRes[i]['node']['labels']['nodes'][j]['color']));
+          }
+        }
+
+        issues.add(Issue(
+          jsonRes[i]['node']['title'],
+          jsonRes[i]['node']['id'],
+          jsonRes[i]['node']['url'],
+          repo,
+          "ghost",
+          jsonRes[i]['node']['state'],
+          jsonRes[i]['node']['number'],
+          labels
+        ));
       }
     }
-
   }
   return issues;
 }

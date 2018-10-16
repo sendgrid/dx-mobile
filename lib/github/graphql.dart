@@ -179,6 +179,12 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
             title
             id
             number
+            labels (first: 30) {
+              nodes {
+                name
+                color
+              }
+            }
             author {
               login
             }
@@ -190,6 +196,7 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
   ''';
 
   final result = await _query(query);
+  // print(result);
   return parsePullRequests(result, owner, repoName);
 }
 
@@ -207,6 +214,12 @@ Future<List<Issue>> getIssues(String owner, String repoName) async {
             id
             number
             state
+            labels (first: 30){
+              nodes {
+                name
+                color
+              }
+            }
             author {
               login
             }
@@ -216,8 +229,8 @@ Future<List<Issue>> getIssues(String owner, String repoName) async {
     }
   }
   ''';
-
   final result = await _query(query);
+  // print(result);
   return parseIssues(result, owner, repoName);
 }
 
