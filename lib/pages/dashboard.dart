@@ -310,8 +310,14 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget _buildPRText(BuildContext context, AsyncSnapshot<int> snapshot) {
+    String text = LOADINGPLACEHOLDER;
+
+    if (snapshot.connectionState == ConnectionState.done) {
+      text = '${snapshot.data}';
+    }
+
     return Text(
-      "${snapshot.data}",
+      text,
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w700,
@@ -321,8 +327,13 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget _buildIssueText(BuildContext context, AsyncSnapshot<int> snapshot) {
+    String text = LOADINGPLACEHOLDER;
+
+    if (snapshot.connectionState == ConnectionState.done) {
+      text = '${snapshot.data}';
+    }
     return Text(
-      "${snapshot.data}",
+      text,
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w700,
@@ -340,14 +351,21 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _buildFutureIntText(
       BuildContext context, AsyncSnapshot<int> snapshot) {
+    String text = LOADINGPLACEHOLDER;
+
+    if (snapshot.connectionState == ConnectionState.done) {
+      text = "${snapshot.data}";
+    }
+
     return Text(
-      "${snapshot.data}",
+      text,
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w700,
         fontSize: 34.0,
       ),
     );
+
   }
 
   void _refreshDashboard(bool b) {
