@@ -38,26 +38,22 @@ class _DashboardState extends State<Dashboard> {
   Future<List<Issue>> issueList;
   Future<int> branches;
   Future<int> releases;
+  static const LOADINGPLACEHOLDER = '…';
 
   RefreshController rc = RefreshController();
 
   @override
   void initState() {
-    prList = graphql.getPRs(widget.owner, widget.repoName);
-    issueList = graphql.getIssues(widget.owner, widget.repoName);
-    branches = graphql.getBranches(widget.owner, widget.repoName);
-    releases = graphql.getReleases(widget.owner, widget.repoName);
+    prList = widget.prList;
+    issueList = widget.issueList;
+    branches = widget.branches;
+    releases = widget.releases;
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    prList = widget.prList;
-    issueList = widget.issueList;
-    branches = widget.branches;
-    releases = widget.releases;
-
     return Scaffold(
       appBar: _buildAppBar(),
       body: SmartRefresher(
