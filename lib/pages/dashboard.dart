@@ -224,7 +224,7 @@ class _DashboardState extends State<Dashboard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Material(
-              color: Colors.amber,
+              color: Colors.red,
               shape: CircleBorder(),
               child: Padding(
                 padding: EdgeInsets.all(16.0),
@@ -262,7 +262,7 @@ class _DashboardState extends State<Dashboard> {
               children: <Widget>[
                 Text(
                   'Branches',
-                  style: TextStyle(color: Colors.redAccent),
+                  style: TextStyle(color: Colors.deepPurpleAccent),
                 ),
                 FutureBuilder(
                   future: branches,
@@ -271,7 +271,7 @@ class _DashboardState extends State<Dashboard> {
               ],
             ),
             Material(
-              color: Colors.red,
+              color: Colors.deepPurpleAccent,
               borderRadius: BorderRadius.circular(24.0),
               child: Center(
                 child: Padding(
