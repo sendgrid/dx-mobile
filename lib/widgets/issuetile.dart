@@ -83,7 +83,7 @@ class LabelTile extends StatelessWidget {
       l.add(LabelWidget(labels[i]));
     }
 
-    return Column(children: l);
+    return Wrap(children: l);
   }
 
   @override
