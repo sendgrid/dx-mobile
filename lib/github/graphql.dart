@@ -241,6 +241,10 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
     query {
       repository(owner: "$owner", name: "${pullRequest.repo.name}") {
         pullRequest(number: ${pullRequest.number}) {
+          body
+          author {
+            login
+          }
           timeline(last: 100) {
             edges {
               node {
@@ -290,6 +294,10 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
     query {
       repository(owner: "$owner", name: "${issue.repo.name}") {
         issue(number: ${issue.number}) {
+          body
+          author {
+            login
+          }
           timeline(last: 100) {
             edges {
               node {
@@ -332,7 +340,7 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
   return parseIssueTimeline(result, issue);
 }
 
-// addComment adds a comment to a issue/pr
+// addComment adds a comment to an issue/pr
 Future<IssueComment> addComment(Issue issue, PullRequest pr, String commentBody) async {
   // issue will be null if it's for a PullRequest
   // pr will be null if it's for an Issue
@@ -365,6 +373,11 @@ Future<IssueComment> addComment(Issue issue, PullRequest pr, String commentBody)
   return parseAddedComment(result, pr, issue);
 
 }
+
+// addLabel adds a label to an issue/pr
+// Future<> addLabel(Issue issue, PullRequest pr, String label) async {
+
+// }
 
 // fetchUserRepos retrieves the repositories that the viewer has contributed to
 Future<List<Repository>> fetchUserRepos() async{
