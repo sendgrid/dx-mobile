@@ -12,7 +12,7 @@ Widget buildTimelineItem(TimelineItem timelineItem) {
     case Commit:
       Commit temp = timelineItem;
       return ListTile(
-        leading: Text(temp.author),
+        leading: Text("${temp.author} made commit: "),
         title: Text(temp.message),
       );
     case LabeledEvent:
