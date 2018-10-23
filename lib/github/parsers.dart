@@ -133,6 +133,10 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
       ['timeline']['edges'];
 
   List<TimelineItem> prTimeline = [];
+  Map tmp = json.decode(resBody)['data']['repository']['pullRequest'];
+  prTimeline.add(
+    IssueComment(pr, null, "", "", "", tmp['author']['login'], tmp['body'])
+  );
   for (var i = 0; i < jsonRes.length; i++) {
     Map temp = jsonRes[i]['node'];
     if (temp.keys.contains('bodyText')) {
@@ -174,6 +178,10 @@ List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
       json.decode(resBody)['data']['repository']['issue']['timeline']['edges'];
 
   List<TimelineItem> issueTimeline = [];
+  Map tmp = json.decode(resBody)['data']['repository']['issue'];
+  issueTimeline.add(
+    IssueComment(null, issue, "", "", "", tmp['author']['login'], tmp['body'])
+  );
   for (var i = 0; i < jsonRes.length; i++) {
     Map temp = jsonRes[i]['node'];
     if (temp.keys.contains('bodyText')) {
