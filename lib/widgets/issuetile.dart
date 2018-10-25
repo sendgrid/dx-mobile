@@ -16,59 +16,63 @@ class IssueTile extends StatelessWidget {
   final Issue issue;
   final PullRequest pr;
 
-  IssueTile(this.issue, this.pr);  
+  IssueTile(this.issue, this.pr);
 
   @override
-    Widget build(BuildContext context) {
-      if (issue == null) {
-        return ListTile(
-          leading: Text("${pr.number}"),
-          title: Column(
-            children: <Widget>[
-              Text("${pr.title}"),
-              Text("Opened by ${pr.author}", style: TextStyle(fontSize: 12.0),),
-              LabelTile(pr.labels)
-            ],
-          ),
-          onTap: () {
-            // call query that displays page with the PR's info
-            Future<List<TimelineItem>> timelines =
-                getPRTimeline(pr);
-            // display them
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    PRTimelineView(timelines, pr),
+  Widget build(BuildContext context) {
+    if (issue == null) {
+      return Card(
+          child: ListTile(
+              contentPadding: EdgeInsets.all(1.0),
+              leading: Text("${pr.number}"),
+              title: Column(
+                children: <Widget>[
+                  Text("${pr.title}"),
+                  Text(
+                    "Opened by ${pr.author}",
+                    style: TextStyle(fontSize: 12.0),
+                  ),
+                  LabelTile(pr.labels)
+                ],
               ),
-            );
-          });
-      }
-      else {
-        return ListTile(
-          leading: Text("${issue.number}"),
-          title: Column(
-            children: <Widget>[
-              Text("${issue.title}"),
-              Text("Opened by ${issue.author}", style: TextStyle(fontSize: 12.0),),
-              LabelTile(issue.labels)
-            ],
-          ),
-          onTap: () {
-            // call query that displays page with the PR's info
-            Future<List<TimelineItem>> timelines =
-                getIssueTimeline(issue);
-            // display them
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    IssueTimelineView(timelines, issue),
+              onTap: () {
+                // call query that displays page with the PR's info
+                Future<List<TimelineItem>> timelines = getPRTimeline(pr);
+                // display them
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PRTimelineView(timelines, pr),
+                  ),
+                );
+              }));
+    } else {
+      return Card(
+          child: ListTile(
+              leading: Text("${issue.number}"),
+              title: Column(
+                children: <Widget>[
+                  Text("${issue.title}"),
+                  Text(
+                    "Opened by ${issue.author}",
+                    style: TextStyle(fontSize: 12.0),
+                  ),
+                  LabelTile(issue.labels)
+                ],
               ),
-            );
-          });
-      }
+              onTap: () {
+                // call query that displays page with the PR's info
+                Future<List<TimelineItem>> timelines = getIssueTimeline(issue);
+                // display them
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => IssueTimelineView(timelines, issue),
+                  ),
+                );
+              }));
     }
+  }
 }
 
 class LabelTile extends StatelessWidget {
@@ -100,10 +104,10 @@ class LabelWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var colorInt = int.parse(label.colorHex, radix: 16);
-    return FlatButton(
-      onPressed: (){},
-      color: Color(colorInt).withOpacity(1.0),
-      child: Text(label.labelName, style: TextStyle(fontWeight: FontWeight.bold))
+    return Chip(
+      backgroundColor: Color(colorInt).withOpacity(1.0),
+      label:
+          Text(label.labelName, style: TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 }

@@ -271,6 +271,7 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
                   label {
                     name
                     url
+                    color
                   }
                   actor {
                     login
@@ -324,6 +325,7 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
                   label {
                     name
                     url
+                    color
                   }
                   actor {
                     login

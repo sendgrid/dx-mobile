@@ -58,9 +58,9 @@ int parseReleases(String resBody) {
 }
 
 // parsePullRequests parses the result from the GraphQL query for fetching the PRs for a repo
-List<PullRequest> parsePullRequests(String resBody, String owner, String repoName) {
-  List jsonRes =
-    json.decode(resBody)['data']['search']['edges'];
+List<PullRequest> parsePullRequests(
+    String resBody, String owner, String repoName) {
+  List jsonRes = json.decode(resBody)['data']['search']['edges'];
 
   Repository repo = Repository(repoName, owner + "/" + repoName);
 
@@ -68,43 +68,43 @@ List<PullRequest> parsePullRequests(String resBody, String owner, String repoNam
   for (var i = 0; i < jsonRes.length; i++) {
     try {
       List<Label> labels = [];
-      if (jsonRes[i]['node']['labels']['nodes'].length != 0){
-        for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++){
-          labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'], jsonRes[i]['node']['labels']['nodes'][j]['color']));
+      if (jsonRes[i]['node']['labels']['nodes'].length != 0) {
+        for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++) {
+          labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
+              jsonRes[i]['node']['labels']['nodes'][j]['color']));
         }
       }
 
       prs.add(PullRequest(
-        jsonRes[i]['node']['id'],
-        jsonRes[i]['node']['title'],
-        jsonRes[i]['node']['url'],
-        repo,
-        jsonRes[i]['node']['author']['login'],
-        jsonRes[i]['node']['number'],
-        labels
-      ));
-
-    } catch(e) {
-      if (e == NoSuchMethodError) {
-        List<Label> labels = [];
-        if (jsonRes[i]['node']['labels']['nodes'].length != 0){
-          for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++){
-            labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'], jsonRes[i]['node']['labels']['nodes'][j]['color']));
-          }
-        }
-
-        prs.add(PullRequest(
           jsonRes[i]['node']['id'],
           jsonRes[i]['node']['title'],
           jsonRes[i]['node']['url'],
           repo,
-          "ghost",
+          jsonRes[i]['node']['author']['login'],
           jsonRes[i]['node']['number'],
-          labels
-        ));
+          labels));
+    } catch (e) {
+      if (e == NoSuchMethodError) {
+        List<Label> labels = [];
+        if (jsonRes[i]['node']['labels']['nodes'].length != 0) {
+          for (var j = 0;
+              j < jsonRes[i]['node']['labels']['nodes'].length;
+              j++) {
+            labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
+                jsonRes[i]['node']['labels']['nodes'][j]['color']));
+          }
+        }
+
+        prs.add(PullRequest(
+            jsonRes[i]['node']['id'],
+            jsonRes[i]['node']['title'],
+            jsonRes[i]['node']['url'],
+            repo,
+            "ghost",
+            jsonRes[i]['node']['number'],
+            labels));
       }
     }
-
   }
   return prs;
 }
@@ -118,41 +118,43 @@ List<Issue> parseIssues(String resBody, String owner, String repoName) {
   for (var i = 0; i < jsonRes.length; i++) {
     try {
       List<Label> labels = [];
-      if (jsonRes[i]['node']['labels']['nodes'].length != 0){
-        for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++){
-          labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'], jsonRes[i]['node']['labels']['nodes'][j]['color']));
+      if (jsonRes[i]['node']['labels']['nodes'].length != 0) {
+        for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++) {
+          labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
+              jsonRes[i]['node']['labels']['nodes'][j]['color']));
         }
       }
 
       issues.add(Issue(
-        jsonRes[i]['node']['title'],
-        jsonRes[i]['node']['id'],
-        jsonRes[i]['node']['url'],
-        repo,
-        jsonRes[i]['node']['author']['login'],
-        jsonRes[i]['node']['state'],
-        jsonRes[i]['node']['number'],
-        labels
-      ));
-    } catch(e) {
-      if (e == NoSuchMethodError){
-        List<Label> labels = [];
-        if (jsonRes[i]['node']['labels']['nodes'].length != 0){
-          for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++){
-            labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'], jsonRes[i]['node']['labels']['nodes'][j]['color']));
-          }
-        }
-
-        issues.add(Issue(
           jsonRes[i]['node']['title'],
           jsonRes[i]['node']['id'],
           jsonRes[i]['node']['url'],
           repo,
-          "ghost",
+          jsonRes[i]['node']['author']['login'],
           jsonRes[i]['node']['state'],
           jsonRes[i]['node']['number'],
-          labels
-        ));
+          labels));
+    } catch (e) {
+      if (e == NoSuchMethodError) {
+        List<Label> labels = [];
+        if (jsonRes[i]['node']['labels']['nodes'].length != 0) {
+          for (var j = 0;
+              j < jsonRes[i]['node']['labels']['nodes'].length;
+              j++) {
+            labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
+                jsonRes[i]['node']['labels']['nodes'][j]['color']));
+          }
+        }
+
+        issues.add(Issue(
+            jsonRes[i]['node']['title'],
+            jsonRes[i]['node']['id'],
+            jsonRes[i]['node']['url'],
+            repo,
+            "ghost",
+            jsonRes[i]['node']['state'],
+            jsonRes[i]['node']['number'],
+            labels));
       }
     }
   }
@@ -167,8 +169,7 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
   List<TimelineItem> prTimeline = [];
   Map tmp = json.decode(resBody)['data']['repository']['pullRequest'];
   prTimeline.add(
-    IssueComment(pr, null, "", "", "", tmp['author']['login'], tmp['body'])
-  );
+      IssueComment(pr, null, "", "", "", tmp['author']['login'], tmp['body']));
   for (var i = 0; i < jsonRes.length; i++) {
     Map temp = jsonRes[i]['node'];
     if (temp.keys.contains('bodyText')) {
@@ -197,8 +198,14 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
         ));
       }
     } else if (temp.keys.contains('label')) {
-      prTimeline.add(LabeledEvent(pr, null, temp['id'], temp['label']['url'],
-          "", temp['actor']['login'], temp['label']['name']));
+      prTimeline.add(LabeledEvent(
+          pr,
+          null,
+          temp['id'],
+          temp['label']['url'],
+          "",
+          temp['actor']['login'],
+          Label(temp['label']['name'], temp['label']['color'])));
     }
   }
   return prTimeline;
@@ -211,9 +218,8 @@ List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
 
   List<TimelineItem> issueTimeline = [];
   Map tmp = json.decode(resBody)['data']['repository']['issue'];
-  issueTimeline.add(
-    IssueComment(null, issue, "", "", "", tmp['author']['login'], tmp['body'])
-  );
+  issueTimeline.add(IssueComment(
+      null, issue, "", "", "", tmp['author']['login'], tmp['body']));
   for (var i = 0; i < jsonRes.length; i++) {
     Map temp = jsonRes[i]['node'];
     if (temp.keys.contains('bodyText')) {
@@ -249,7 +255,7 @@ List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
           temp['label']['url'],
           "",
           temp['actor']['login'],
-          temp['label']['name']));
+          Label(temp['label']['name'], temp['label']['color'])));
     }
   }
   return issueTimeline;
@@ -258,8 +264,8 @@ List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
 // parseUserRepos parses the result from the GraphQL query for fetching the repositories for a user
 List<Repository> parseUserRepos(String resBody) {
   List jsonRes =
-    json.decode(resBody)['data']['viewer']['repositories']['nodes'];
-  
+      json.decode(resBody)['data']['viewer']['repositories']['nodes'];
+
   List<Repository> repos = [];
 
   for (var i = 0; i < jsonRes.length; i++) {
@@ -270,10 +276,11 @@ List<Repository> parseUserRepos(String resBody) {
 }
 
 // parseAddedComment parses the response received after calling addComment mutation
-IssueComment parseAddedComment(String resBody, PullRequest pr, Issue issue){
-  Map jsonRes = json.decode(resBody)['data']['addComment']['commentEdge']['node'];
+IssueComment parseAddedComment(String resBody, PullRequest pr, Issue issue) {
+  Map jsonRes =
+      json.decode(resBody)['data']['addComment']['commentEdge']['node'];
   Map jsonTemp = json.decode(resBody)['data']['addComment'];
 
-  return IssueComment(pr, issue, "", jsonRes['url'], 
-  jsonTemp['subject']['id'], jsonRes['author']['login'], jsonRes['bodyText']);
+  return IssueComment(pr, issue, "", jsonRes['url'], jsonTemp['subject']['id'],
+      jsonRes['author']['login'], jsonRes['bodyText']);
 }

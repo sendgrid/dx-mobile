@@ -1,5 +1,6 @@
 import 'pullrequest.dart';
 import 'issue.dart';
+import 'label.dart';
 
 // contains timeline items
 class TimelineItem {
@@ -54,10 +55,10 @@ class Commit extends TimelineItem {
 }
 
 class LabeledEvent extends TimelineItem {
-  String labelName;
+  Label label;
 
   LabeledEvent(PullRequest pr, Issue issue, String id, String url, String title,
-      String author, this.labelName)
+      String author, this.label)
       : super(pr, issue, id, url, title, author);
-  String toString() => super.toString() + "Label Name: $labelName";
+  String toString() => super.toString() + "Label Name: ${label.labelName}";
 }

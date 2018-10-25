@@ -106,23 +106,6 @@ class IssueListViewState extends State<IssueListView> {
             .map(
               (issue) => Container(
               child: IssueTile(issue, null)
-              
-              // ListTile(
-              //       title: Text("${issue.title} #${issue.number}"),
-              //       subtitle: Text(issue.author),
-              //       onTap: () {
-              //         Future<List<TimelineItem>> timelines =
-              //             getIssueTimeline(issue);
-              //         // display them
-              //         Navigator.push(
-              //           context,
-              //           MaterialPageRoute(
-              //             builder: (context) =>
-              //                 IssueTimelineView(timelines, issue),
-              //           ),
-              //         );
-              //       },
-              //     ),
             ))
             .toList(),
       ),

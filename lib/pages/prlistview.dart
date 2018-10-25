@@ -73,26 +73,6 @@ class PRListViewState extends State<PRListView> {
             .map(
               (pullRequest) => Container(
                     child: IssueTile(null, pullRequest)
-                    
-                    // ListTile(
-                    //   title:
-                    //       Text("${pullRequest.title} #${pullRequest.number}"),
-                    //   subtitle: Text("${pullRequest.author}"),
-                    //   onTap: () {
-                    //     // call query that displays page with the PR's info
-                    //     Future<List<TimelineItem>> timelines =
-                    //         getPRTimeline(pullRequest);
-                    //     // display them
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) =>
-                    //             PRTimelineView(timelines, pullRequest),
-                    //       ),
-                    //     );
-                    //   },
-                    //   //trailing: StarWidget(pullRequest.repo.starCount),
-                    // ),
             ))
             .toList(),
       ),
