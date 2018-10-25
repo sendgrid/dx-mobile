@@ -83,4 +83,4 @@ dx-mobile is maintained and funded by SendGrid, Inc. The names and logos for dx-
 
 <a name="license"></a>
 # License
-[The MIT License (MIT)](LICENSE.txt)
+[The MIT License (MIT)](LICENSE)
