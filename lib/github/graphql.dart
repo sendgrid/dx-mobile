@@ -135,10 +135,10 @@ _removeSpuriousSpacing(String str) => str.replaceAll(RegExp(r'\s+'), ' ');
 // NON CHROMIUM AUTHOR CODE BELOW (the code below is under MIT license)
 
 // getBranches retrieves the number of branches in a repo
-Future<int> getBranches(String owner, String repoName) async {
+Future<int> getBranches(Repository repo) async {
   final query = '''
     query {
-      repository(name: "$repoName", owner: "$owner") {
+      repository(name: "${repo.name}", owner: "${repo.owner}") {
         refs(last: 100 , refPrefix:"refs/heads/") {
           totalCount
         }
@@ -151,10 +151,10 @@ Future<int> getBranches(String owner, String repoName) async {
 }
 
 // getReleases retrieves the number of releases in a repo
-Future<int> getReleases(String owner, String repoName) async {
+Future<int> getReleases(Repository repo) async {
   final query = '''
     query {
-      repository(name: "$repoName", owner: "$owner") {
+      repository(name: "${repo.name}", owner: "${repo.owner}") {
         refs(refPrefix:"refs/tags/") {
           totalCount
         }
@@ -167,11 +167,11 @@ Future<int> getReleases(String owner, String repoName) async {
 }
 
 // getPRs retrieves pull requests from a given repo/owner
-Future<List<PullRequest>> getPRs(String owner, String repoName) async {
+Future<List<PullRequest>> getPRs(Repository repo) async {
   final query =
   '''
   query {
-    search (query: "type:pr state:open repo:$owner/$repoName", type: ISSUE, first: 100){
+    search (query: "type:pr state:open repo:${repo.nameWithOwner}", type: ISSUE, first: 100){
       edges {
         node {
           ... on PullRequest {
@@ -197,15 +197,15 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
 
   final result = await _query(query);
   // print(result);
-  return parsePullRequests(result, owner, repoName);
+  return parsePullRequests(result, repo);
 }
 
 // getIssues retrieves the open issues for a given repo
-Future<List<Issue>> getIssues(String owner, String repoName) async {
+Future<List<Issue>> getIssues(Repository repo) async {
   final query =
   '''
   query {
-    search (query: "type:issue state:open repo:$owner/$repoName", type: ISSUE, first: 100){
+    search (query: "type:issue state:open repo:${repo.nameWithOwner}", type: ISSUE, first: 100){
       edges {
         node {
           ... on Issue {
@@ -231,7 +231,7 @@ Future<List<Issue>> getIssues(String owner, String repoName) async {
   ''';
   final result = await _query(query);
   // print(result);
-  return parseIssues(result, owner, repoName);
+  return parseIssues(result, repo);
 }
 
 // getPRTimeline retrieves timeline from a specific PR of an organization's repo
@@ -392,6 +392,15 @@ Future<List<Repository>> fetchUserRepos() async{
           name
           url
           nameWithOwner
+          owner {
+            login
+          }
+          labels(last: 100){
+            nodes {
+              color
+              name
+            }
+          }
         }
       }
     }

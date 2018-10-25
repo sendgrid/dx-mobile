@@ -8,21 +8,21 @@ import '../github/pullrequest.dart';
 import '../github/graphql.dart' as graphql;
 import '../github/user.dart';
 import '../github/issue.dart';
+import '../github/repository.dart';
 
 import '../pages/prlistview.dart';
 import '../pages/issuelistview.dart';
 
 class Dashboard extends StatefulWidget {
-  final String owner;
-  final String repoName;
+
+  final Repository repo;
   final Future<List<PullRequest>> prList;
   final Future<List<Issue>> issueList;
   final Future<int> branches;
   final Future<int> releases;
 
   Dashboard(
-    this.owner,
-    this.repoName,
+    this.repo,
     this.prList,
     this.issueList,
     this.branches,
@@ -88,7 +88,7 @@ class _DashboardState extends State<Dashboard> {
         elevation: 2.0,
         backgroundColor: Colors.white,
         title: Text(
-          widget.repoName,
+          widget.repo.name,
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w700,
@@ -162,8 +162,7 @@ class _DashboardState extends State<Dashboard> {
             context,
             MaterialPageRoute(
               builder: (context) => PRListView(
-                    widget.owner,
-                    widget.repoName,
+                    widget.repo,
                     prList,
                   ),
             ),
@@ -207,8 +206,7 @@ class _DashboardState extends State<Dashboard> {
             context,
             MaterialPageRoute(
               builder: (context) => IssueListView(
-                    widget.owner,
-                    widget.repoName,
+                    widget.repo,
                     widget.issueList,
                   ),
             ),
@@ -370,10 +368,10 @@ class _DashboardState extends State<Dashboard> {
 
   void _refreshDashboard(bool b) {
     setState(() {
-      prList = graphql.getPRs(widget.owner, widget.repoName);
-      issueList = graphql.getIssues(widget.owner, widget.repoName);
-      branches = graphql.getBranches(widget.owner, widget.repoName);
-      releases = graphql.getReleases(widget.owner, widget.repoName);
+      prList = graphql.getPRs(widget.repo);
+      issueList = graphql.getIssues(widget.repo);
+      branches = graphql.getBranches(widget.repo);
+      releases = graphql.getReleases(widget.repo);
 
       rc.sendBack(true, RefreshStatus.completed);
 
@@ -386,8 +384,7 @@ class _DashboardState extends State<Dashboard> {
             Animation<double> secondAnimation,
           ) =>
               Dashboard(
-                widget.owner,
-                widget.repoName,
+                widget.repo,
                 prList,
                 issueList,
                 branches,

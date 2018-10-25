@@ -34,18 +34,15 @@ class RepoListViewState extends State<RepoListView> {
                       title: Text("${repo.name}"),
                       subtitle: Text("${repo.nameWithOwner}"),
                       onTap: () {
-                        String owner = repo.nameWithOwner.split("/")[0];
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (_) => Dashboard(
-                                  owner,
-                                  repo.name,
-                                  getPRs(owner, repo.name),
-                                  getIssues(owner, repo.name),
-                                  getBranches(owner, repo.name),
-                                  getReleases(owner, repo.name))),
+                                  repo,
+                                  getPRs(repo),
+                                  getIssues(repo),
+                                  getBranches(repo),
+                                  getReleases(repo))),
                         );
                       },
                       // TODO: Add a trailing widget indicating star count of
