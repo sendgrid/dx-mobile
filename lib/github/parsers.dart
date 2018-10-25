@@ -59,10 +59,9 @@ int parseReleases(String resBody) {
 
 // parsePullRequests parses the result from the GraphQL query for fetching the PRs for a repo
 List<PullRequest> parsePullRequests(
-    String resBody, String owner, String repoName) {
+    String resBody, Repository repo) {
   List jsonRes = json.decode(resBody)['data']['search']['edges'];
 
-  Repository repo = Repository(repoName, owner + "/" + repoName);
 
   List<PullRequest> prs = [];
   for (var i = 0; i < jsonRes.length; i++) {
@@ -110,9 +109,8 @@ List<PullRequest> parsePullRequests(
 }
 
 // parseIssues parses the result from the GraphQL query for fetching the issues for a repo
-List<Issue> parseIssues(String resBody, String owner, String repoName) {
+List<Issue> parseIssues(String resBody, Repository repo) {
   List jsonRes = json.decode(resBody)['data']['search']['edges'];
-  Repository repo = Repository(repoName, owner + "/" + repoName);
 
   List<Issue> issues = [];
   for (var i = 0; i < jsonRes.length; i++) {
@@ -269,7 +267,12 @@ List<Repository> parseUserRepos(String resBody) {
   List<Repository> repos = [];
 
   for (var i = 0; i < jsonRes.length; i++) {
-    repos.add(Repository(jsonRes[i]['name'], jsonRes[i]['nameWithOwner']));
+    List<Label> labels = [];
+    List nodes = jsonRes[i]['labels']['nodes'];
+    for (var j = 0; j < nodes.length; j++){
+      labels.add(Label(nodes[j]['name'], nodes[j]['color']));
+    }
+    repos.add(Repository(jsonRes[i]['name'], jsonRes[i]['owner']['login'],jsonRes[i]['nameWithOwner'], labels));
   }
 
   return repos;

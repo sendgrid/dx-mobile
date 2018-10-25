@@ -6,14 +6,15 @@ import '../pages/issuetimelineview.dart';
 import '../github/timeline.dart';
 import '../github/graphql.dart';
 import '../github/issue.dart';
+import '../github/repository.dart';
+
 import '../widgets/issuetile.dart';
 
 class IssueListView extends StatefulWidget {
-  final String owner;
-  final String repoName;
+  final Repository repo;
   final Future<List<Issue>> issueList;
 
-  IssueListView(this.owner, this.repoName, this.issueList);
+  IssueListView(this.repo, this.issueList);
 
   @override
   State<StatefulWidget> createState() => IssueListViewState(issueList);
@@ -64,7 +65,7 @@ class IssueListViewState extends State<IssueListView> {
   }
 
   void _refreshIssueList(bool b) {
-    issueList = getIssues(widget.owner, widget.repoName);
+    issueList = getIssues(widget.repo);
     //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
     // can look into making this better later on
 
@@ -76,8 +77,7 @@ class IssueListViewState extends State<IssueListView> {
         Animation<double> secondAnimation,
       ) {
         return IssueListView(
-          widget.owner,
-          widget.repoName,
+          widget.repo,
           issueList,
         );
       }, transitionsBuilder: (
