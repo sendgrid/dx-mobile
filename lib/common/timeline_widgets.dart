@@ -19,7 +19,7 @@ Widget buildTimelineItem(TimelineItem timelineItem) {
       LabeledEvent temp = timelineItem;
       return ListTile(
         leading: Text("${temp.author} added label: "),
-        title: Chip(label: Text(temp.labelName)),
+        title: Chip(label: Text(temp.label.labelName, style: TextStyle(fontWeight: FontWeight.bold),), backgroundColor: Color(int.parse(temp.label.colorHex, radix: 16)).withOpacity(1.0),)
       );
 
     default:
