@@ -67,10 +67,10 @@ class _DashboardState extends State<Dashboard> {
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           children: <Widget>[
             _buildUserAvatar(),
-            _buildReleasesTile(),
+            _buildBranchesTile(),
             _buildPullRequestsTile(),
             _buildIssuesTile(),
-            _buildBranchesTile(),
+            _buildReleasesTile(),
           ],
           staggeredTiles: [
             StaggeredTile.extent(2, 180.0),

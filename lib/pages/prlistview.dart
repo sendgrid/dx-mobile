@@ -6,6 +6,7 @@ import '../github/pullrequest.dart';
 import '../github/timeline.dart';
 import '../github/graphql.dart';
 import './prtimelineview.dart';
+import '../widgets/issuetile.dart';
 
 class PRListView extends StatefulWidget {
   final String owner;
@@ -71,27 +72,28 @@ class PRListViewState extends State<PRListView> {
         children: prs
             .map(
               (pullRequest) => Container(
-                    child: ListTile(
-                      title:
-                          Text("${pullRequest.title} #${pullRequest.number}"),
-                      subtitle: Text("${pullRequest.author}"),
-                      onTap: () {
-                        // call query that displays page with the PR's info
-                        Future<List<TimelineItem>> timelines =
-                            getPRTimeline(pullRequest);
-                        // display them
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                PRTimelineView(timelines, pullRequest),
-                          ),
-                        );
-                      },
-                      //trailing: StarWidget(pullRequest.repo.starCount),
-                    ),
-                  ),
-            )
+                    child: IssueTile(null, pullRequest)
+                    
+                    // ListTile(
+                    //   title:
+                    //       Text("${pullRequest.title} #${pullRequest.number}"),
+                    //   subtitle: Text("${pullRequest.author}"),
+                    //   onTap: () {
+                    //     // call query that displays page with the PR's info
+                    //     Future<List<TimelineItem>> timelines =
+                    //         getPRTimeline(pullRequest);
+                    //     // display them
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             PRTimelineView(timelines, pullRequest),
+                    //       ),
+                    //     );
+                    //   },
+                    //   //trailing: StarWidget(pullRequest.repo.starCount),
+                    // ),
+            ))
             .toList(),
       ),
     );

@@ -6,6 +6,7 @@ import '../pages/issuetimelineview.dart';
 import '../github/timeline.dart';
 import '../github/graphql.dart';
 import '../github/issue.dart';
+import '../widgets/issuetile.dart';
 
 class IssueListView extends StatefulWidget {
   final String owner;
@@ -103,23 +104,26 @@ class IssueListViewState extends State<IssueListView> {
       child: ListView(
         children: issues
             .map(
-              (issue) => ListTile(
-                    title: Text("${issue.title} #${issue.number}"),
-                    subtitle: Text(issue.author),
-                    onTap: () {
-                      Future<List<TimelineItem>> timelines =
-                          getIssueTimeline(issue);
-                      // display them
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              IssueTimelineView(timelines, issue),
-                        ),
-                      );
-                    },
-                  ),
-            )
+              (issue) => Container(
+              child: IssueTile(issue, null)
+              
+              // ListTile(
+              //       title: Text("${issue.title} #${issue.number}"),
+              //       subtitle: Text(issue.author),
+              //       onTap: () {
+              //         Future<List<TimelineItem>> timelines =
+              //             getIssueTimeline(issue);
+              //         // display them
+              //         Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //             builder: (context) =>
+              //                 IssueTimelineView(timelines, issue),
+              //           ),
+              //         );
+              //       },
+              //     ),
+            ))
             .toList(),
       ),
     );
