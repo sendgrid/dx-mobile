@@ -73,6 +73,14 @@ If you have multiple emulators running, you can run the app on all the devices a
 
 ```$ flutter run -d all ```
 
+<a name="announcements"></a>
+# Announcements
+
+## Job Openings
+
+### Software Engineer
+If you're a software engineer who is passionate about #DeveloperExperience and/or #OpenSource, this is an incredible opportunity to join our #DX team as a Developer Experience Engineer and work with @thinkingserious and @aroach! Tell your friends :)
+
 
 <a name="about"></a>
 # About
