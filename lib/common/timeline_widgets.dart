@@ -35,7 +35,7 @@ Widget buildCommentTextbox({
 }) {
   return Expanded(
     child: Container(
-      padding: EdgeInsets.only(left: 10.0, bottom: 5.0),
+      padding: EdgeInsets.only(left: 10.0, bottom: 5.0, top:5.0),
       width: MediaQuery.of(context).size.width * 5 / 8,
       child: TextField(
         controller: textEditingController,
@@ -58,7 +58,7 @@ Widget buildSubmitCommentButton({
   @required Function onPressed,
 }) =>
     Container(
-      padding: EdgeInsets.only(bottom: 4.0),
+      padding: EdgeInsets.only(right:10.0, bottom: 5.0, top: 5.0),
       child: RaisedButton(
         child: Text("Comment"),
         color: Theme.of(context).primaryColorLight,
@@ -66,3 +66,17 @@ Widget buildSubmitCommentButton({
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
       ),
     );
+
+
+Widget buildAddLabelButton({
+  @required BuildContext context,
+  @required Function onPressed,
+}) =>
+  Container(
+    padding: EdgeInsets.only(left: 10.0),
+    child: RaisedButton(
+      child: Text("Add labels", style: TextStyle(color: Colors.white),),
+      color: Theme.of(context).primaryColorDark,
+      onPressed: onPressed,
+    )
+  );
