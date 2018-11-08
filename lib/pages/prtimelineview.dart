@@ -5,7 +5,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../github/graphql.dart';
 import '../github/pullrequest.dart';
 import '../github/timeline.dart';
+import '../github/label.dart';
+
 import '../common/timeline_widgets.dart';
+
+import '../widgets/issuetile.dart';
+import '../widgets/dialogbox.dart';
 
 class PRTimelineView extends StatefulWidget {
   final Future<List<TimelineItem>> prTimelineList;
@@ -99,6 +104,15 @@ class PRTimelineViewState extends State<PRTimelineView> {
           ),
         ),
         Divider(height: 1.0),
+        // Column(
+        //   mainAxisAlignment: MainAxisAlignment.end,
+        //   children: <Widget>[
+        //     FloatingActionButton(
+        //       child: Text("Add Label", textAlign: TextAlign.center,),
+        //       backgroundColor: Colors.blueGrey,
+        //     ),
+        //   ],
+        // ),
         Container(
           child: Row(
             children: <Widget>[
@@ -112,7 +126,7 @@ class PRTimelineViewState extends State<PRTimelineView> {
                 },
               ),
               SizedBox(
-                width: MediaQuery.of(context).size.width / 10,
+                width: MediaQuery.of(context).size.width / 15,
               ),
               buildSubmitCommentButton(
                 context: context,
@@ -122,6 +136,19 @@ class PRTimelineViewState extends State<PRTimelineView> {
           ),
         )
       ]),
+      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).primaryColor,
+        child: Row(
+          children: <Widget>[
+            buildAddLabelButton(
+              context: context,
+              onPressed: (){
+                _showMultiSelect(context);
+              }
+            )
+          ],
+        )
+      ),
     );
   }
 
@@ -135,5 +162,28 @@ class PRTimelineViewState extends State<PRTimelineView> {
       _refreshPRTimelineList(true);
     }
     _textEditingController.clear();
+  }
+
+  void addLabelToPR() {
+
+  }
+
+  void _showMultiSelect(BuildContext context) async {
+    final items = <MultiSelectDialogItem<int>>[];
+    List<Label> labels = widget.pr.repo.labels;
+    for (int i = 0; i < labels.length; i++){
+      items.add(MultiSelectDialogItem(i + 1, labels[i]));
+    }
+
+    final selectedValues = await showDialog<Set<int>>(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelectDialog( // edit the code to render it as a bunch of labels
+          items: items
+        );
+      },
+    );
+
+    print(selectedValues);
   }
 }
