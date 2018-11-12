@@ -177,6 +177,13 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
       },
     );
 
-    print(selectedValues);
+    // print(selectedValues);
+    List<Label> selLabels = [];
+    for (int i = 0; i < items.length; i++){
+      if (selectedValues.contains(items[i].value)){
+        selLabels.add(items[i].label);
+      }
+    }
+    print(selLabels);
   }
 }

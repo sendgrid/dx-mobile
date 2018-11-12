@@ -16,6 +16,7 @@ import 'timeline.dart';
 import 'repository.dart';
 import 'token.dart';
 import 'user.dart';
+import 'label.dart';
 
 final url = 'https://api.github.com/graphql';
 final headers = {'Authorization': 'bearer $token'};
@@ -183,6 +184,7 @@ Future<List<PullRequest>> getPRs(Repository repo) async {
               nodes {
                 name
                 color
+                id
               }
             }
             author {
@@ -218,6 +220,7 @@ Future<List<Issue>> getIssues(Repository repo) async {
               nodes {
                 name
                 color
+                id
               }
             }
             author {
@@ -272,6 +275,7 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
                     name
                     url
                     color
+                    id
                   }
                   actor {
                     login
@@ -326,6 +330,7 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
                     name
                     url
                     color
+                    id
                   }
                   actor {
                     login
@@ -377,9 +382,29 @@ Future<IssueComment> addComment(Issue issue, PullRequest pr, String commentBody)
 }
 
 // addLabel adds a label to an issue/pr
-// Future<> addLabel(Issue issue, PullRequest pr, String label) async {
-
-// }
+Future<LabeledEvent> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async {
+  // issue will be null if it's for a PullRequest
+  // pr will be null if it's for an Issue
+  String id = "";
+  if (issue == null) {
+    id = pr.id;
+  } else {
+    id = issue.id;
+  }
+  // final mutation = '''
+  // mutation {
+  //   addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+  //     labelable
+  //     subject {
+  //       id
+  //     }
+  //   }
+  // }
+  // ''';
+  // final result = await _query(mutation);
+  // print(result);
+  // return parseAddedComment(result, pr, issue);
+}
 
 // fetchUserRepos retrieves the repositories that the viewer has contributed to
 Future<List<Repository>> fetchUserRepos() async{
@@ -399,6 +424,7 @@ Future<List<Repository>> fetchUserRepos() async{
             nodes {
               color
               name
+              id
             }
           }
         }
