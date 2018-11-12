@@ -1,12 +1,14 @@
 class Label {
   final String labelName;
   final String colorHex;
+  final String id;
 
   Label(
     this.labelName,
-    this.colorHex
+    this.colorHex,
+    this.id
   );
 
   String toString() =>
-      '$labelName, $colorHex';
+      '$labelName, $colorHex, $id';
 }

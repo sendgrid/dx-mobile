@@ -70,7 +70,8 @@ List<PullRequest> parsePullRequests(
       if (jsonRes[i]['node']['labels']['nodes'].length != 0) {
         for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++) {
           labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
-              jsonRes[i]['node']['labels']['nodes'][j]['color']));
+              jsonRes[i]['node']['labels']['nodes'][j]['color'],
+              jsonRes[i]['node']['labels']['nodes'][j]['id']));
         }
       }
 
@@ -90,7 +91,8 @@ List<PullRequest> parsePullRequests(
               j < jsonRes[i]['node']['labels']['nodes'].length;
               j++) {
             labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
-                jsonRes[i]['node']['labels']['nodes'][j]['color']));
+                jsonRes[i]['node']['labels']['nodes'][j]['color'],
+                jsonRes[i]['node']['labels']['nodes'][j]['id']));
           }
         }
 
@@ -119,7 +121,8 @@ List<Issue> parseIssues(String resBody, Repository repo) {
       if (jsonRes[i]['node']['labels']['nodes'].length != 0) {
         for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++) {
           labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
-              jsonRes[i]['node']['labels']['nodes'][j]['color']));
+              jsonRes[i]['node']['labels']['nodes'][j]['color'],
+              jsonRes[i]['node']['labels']['nodes'][j]['id']));
         }
       }
 
@@ -140,7 +143,8 @@ List<Issue> parseIssues(String resBody, Repository repo) {
               j < jsonRes[i]['node']['labels']['nodes'].length;
               j++) {
             labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
-                jsonRes[i]['node']['labels']['nodes'][j]['color']));
+                jsonRes[i]['node']['labels']['nodes'][j]['color'],
+                jsonRes[i]['node']['labels']['nodes'][j]['id']));
           }
         }
 
@@ -203,7 +207,8 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
           temp['label']['url'],
           "",
           temp['actor']['login'],
-          Label(temp['label']['name'], temp['label']['color'])));
+          Label(temp['label']['name'], temp['label']['color'],
+          temp['label']['id'])));
     }
   }
   return prTimeline;
@@ -253,7 +258,8 @@ List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
           temp['label']['url'],
           "",
           temp['actor']['login'],
-          Label(temp['label']['name'], temp['label']['color'])));
+          Label(temp['label']['name'], temp['label']['color'],
+          temp['label']['id'])));
     }
   }
   return issueTimeline;
@@ -270,7 +276,7 @@ List<Repository> parseUserRepos(String resBody) {
     List<Label> labels = [];
     List nodes = jsonRes[i]['labels']['nodes'];
     for (var j = 0; j < nodes.length; j++){
-      labels.add(Label(nodes[j]['name'], nodes[j]['color']));
+      labels.add(Label(nodes[j]['name'], nodes[j]['color'], nodes[j]['id']));
     }
     repos.add(Repository(jsonRes[i]['name'], jsonRes[i]['owner']['login'],jsonRes[i]['nameWithOwner'], labels));
   }
