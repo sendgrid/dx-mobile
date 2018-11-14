@@ -19,7 +19,8 @@ import 'user.dart';
 import 'label.dart';
 
 final url = 'https://api.github.com/graphql';
-final headers = {'Authorization': 'bearer $token'};
+// updated this to allow use of preview stuff in the GraphQL API
+final headers = {'Authorization': 'bearer $token', 'Accept': 'application/vnd.github.starfire-preview+json'};
 final postHeaders = {'Authorization': 'token $token'};
 
 /// Fetches the details of the specified user
@@ -382,7 +383,7 @@ Future<IssueComment> addComment(Issue issue, PullRequest pr, String commentBody)
 }
 
 // addLabel adds a label to an issue/pr
-Future<LabeledEvent> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async {
+Future<List> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async {
   // issue will be null if it's for a PullRequest
   // pr will be null if it's for an Issue
   String id = "";
@@ -391,19 +392,52 @@ Future<LabeledEvent> addLabel(Issue issue, PullRequest pr, List<String> labelIds
   } else {
     id = issue.id;
   }
-  // final mutation = '''
-  // mutation {
-  //   addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
-  //     labelable
-  //     subject {
-  //       id
-  //     }
-  //   }
-  // }
-  // ''';
-  // final result = await _query(mutation);
-  // print(result);
-  // return parseAddedComment(result, pr, issue);
+  final mutationPR = '''
+  mutation {
+    addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+      labelable {
+        ... on PullRequest {
+          labels (first: 30){
+            nodes {
+              name
+              color
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+  ''';
+
+  final mutationIss = '''
+  mutation {
+    addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+      labelable {
+        ... on Issue {
+          labels (first: 30){
+            nodes {
+              name
+              color
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+  ''';
+
+  var result;
+  if (issue == null) {
+    result = await _query(mutationPR);
+  }
+  else {
+    result = await _query(mutationIss);
+    print('issue');
+  }
+  print(result);
+  return parseAddedLabels(result, pr, issue);
 }
 
 // fetchUserRepos retrieves the repositories that the viewer has contributed to

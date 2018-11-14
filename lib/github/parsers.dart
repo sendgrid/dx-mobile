@@ -293,3 +293,9 @@ IssueComment parseAddedComment(String resBody, PullRequest pr, Issue issue) {
   return IssueComment(pr, issue, "", jsonRes['url'], jsonTemp['subject']['id'],
       jsonRes['author']['login'], jsonRes['bodyText']);
 }
+
+List parseAddedLabels(String resBody, PullRequest pr, Issue issue) {
+  List labels =
+      json.decode(resBody)['data']['addLabelsToLabelable']['labelable']['labels']['nodes'];
+  return labels;
+}
