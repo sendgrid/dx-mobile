@@ -174,6 +174,7 @@ class PRTimelineViewState extends State<PRTimelineView> {
     for (int i = 0; i < labels.length; i++){
       items.add(MultiSelectDialogItem(i + 1, labels[i]));
     }
+    print(labels);
 
     final selectedValues = await showDialog<Set<int>>(
       context: context,
@@ -192,6 +193,10 @@ class PRTimelineViewState extends State<PRTimelineView> {
       }
     }
     print(labelIds);
-    addLabel(null, widget.pr, labelIds);
+        addLabel(null, widget.pr, labelIds).then(
+        (List labels) {
+          _refreshPRTimelineList(true);
+        },
+      );
   }
 }
