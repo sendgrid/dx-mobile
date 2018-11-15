@@ -5,22 +5,25 @@ Widget buildTimelineItem(TimelineItem timelineItem) {
   switch (timelineItem.runtimeType) {
     case IssueComment:
       IssueComment temp = timelineItem;
-      return ListTile(
-        leading: Text(temp.author),
-        title: Text(temp.body),
-      );
+      return Card(
+        child: ListTile(
+          leading: Text(temp.author),
+          title: Text(temp.body),
+        ));
     case Commit:
       Commit temp = timelineItem;
-      return ListTile(
-        leading: Text("${temp.author} made commit: "),
-        title: Text(temp.message),
-      );
+      return Card(
+        child: ListTile(
+          leading: Text("${temp.author} made commit: "),
+          title: Text(temp.message),
+        ));
     case LabeledEvent:
       LabeledEvent temp = timelineItem;
-      return ListTile(
-        leading: Text("${temp.author} added label: "),
-        title: Chip(label: Text(temp.label.labelName, style: TextStyle(fontWeight: FontWeight.bold),), backgroundColor: Color(int.parse(temp.label.colorHex, radix: 16)).withOpacity(1.0),)
-      );
+      return Card(
+        child: ListTile(
+          leading: Text("${temp.author} added label: "),
+          title: Chip(label: Text(temp.label.labelName, style: TextStyle(fontWeight: FontWeight.bold),), backgroundColor: Color(int.parse(temp.label.colorHex, radix: 16)).withOpacity(1.0),)
+        ));
 
     default:
       return ErrorWidget(Exception("Unknown TimelineItem type"));
