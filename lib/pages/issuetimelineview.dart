@@ -179,15 +179,18 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
 
     // print(selectedValues);
     List<String> labelIds = [];
-    for (int i = 0; i < items.length; i++){
-      if (selectedValues.contains(items[i].value)){
-        labelIds.add(items[i].label.id);
+    if (selectedValues != Set()) {
+      for (int i = 0; i < items.length; i++){
+        if (selectedValues.contains(items[i].value)){
+          labelIds.add(items[i].label.id);
+        }
       }
+      print(labelIds);
+      addLabel(widget.issue, null, labelIds).then(
+      (List labels) {
+        _refreshIssueTimelineList(true);
+      });
     }
-    addLabel(widget.issue, null, labelIds).then(
-        (List labels) {
-          _refreshIssueTimelineList(true);
-        },
-      );
+
   }
 }

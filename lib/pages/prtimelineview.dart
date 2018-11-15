@@ -187,16 +187,17 @@ class PRTimelineViewState extends State<PRTimelineView> {
 
     // print(selectedValues);
     List<String> labelIds = [];
-    for (int i = 0; i < items.length; i++){
-      if (selectedValues.contains(items[i].value)){
-        labelIds.add(items[i].label.id);
+    if (selectedValues != Set()) {
+      for (int i = 0; i < items.length; i++){
+        if (selectedValues.contains(items[i].value)){
+          labelIds.add(items[i].label.id);
+        }
       }
+      print(labelIds);
+      addLabel(null, widget.pr, labelIds).then(
+      (List labels) {
+        _refreshPRTimelineList(true);
+      });
     }
-    print(labelIds);
-        addLabel(null, widget.pr, labelIds).then(
-        (List labels) {
-          _refreshPRTimelineList(true);
-        },
-      );
   }
 }

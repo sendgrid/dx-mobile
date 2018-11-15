@@ -392,47 +392,47 @@ Future<List> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async 
   } else {
     id = issue.id;
   }
-  final mutationPR = '''
-  mutation {
-    addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
-      labelable {
-        ... on PullRequest {
-          labels (first: 30){
-            nodes {
-              name
-              color
-              id
-            }
-          }
-        }
-      }
-    }
-  }
-  ''';
-
-  final mutationIss = '''
-  mutation {
-    addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
-      labelable {
-        ... on Issue {
-          labels (first: 30){
-            nodes {
-              name
-              color
-              id
-            }
-          }
-        }
-      }
-    }
-  }
-  ''';
 
   var result;
   if (issue == null) {
+    final mutationPR = '''
+    mutation {
+      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+        labelable {
+          ... on PullRequest {
+            labels (first: 30){
+              nodes {
+                name
+                color
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+    ''';
     result = await _query(mutationPR);
   }
   else {
+    id = id.substring(0, id.length - 1);
+    final mutationIss = '''
+    mutation {
+      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+        labelable {
+          ... on Issue {
+            labels (first: 30){
+              nodes {
+                name
+                color
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+    ''';
     result = await _query(mutationIss);
     print('issue');
   }
