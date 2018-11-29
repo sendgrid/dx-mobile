@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../github/timeline.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 Widget buildTimelineItem(TimelineItem timelineItem) {
   switch (timelineItem.runtimeType) {
@@ -8,7 +9,7 @@ Widget buildTimelineItem(TimelineItem timelineItem) {
       return Card(
         child: ListTile(
           leading: Text(temp.author),
-          title: Text(temp.body),
+          title: new MarkdownBody(data: temp.body),
         ));
     case Commit:
       Commit temp = timelineItem;
