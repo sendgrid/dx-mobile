@@ -1,29 +1,47 @@
 import 'package:flutter/material.dart';
-import '../github/timeline.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+
+import '../github/user.dart';
+import '../github/timeline.dart';
+import '../github/graphql.dart';
 
 Widget buildTimelineItem(TimelineItem timelineItem) {
   switch (timelineItem.runtimeType) {
     case IssueComment:
       IssueComment temp = timelineItem;
       return Card(
-        child: ListTile(
-          leading: Text(temp.author),
-          title: new MarkdownBody(data: temp.body),
+        child: Column(
+          children: <Widget>[
+            buildLeadingIconBar(temp.author, "commented"),
+            ListTile(
+              // leading: buildLeadingIcon(temp.author, "commented"),
+              title: new MarkdownBody(data: temp.body),
+            )
+          ],
         ));
     case Commit:
       Commit temp = timelineItem;
       return Card(
-        child: ListTile(
-          leading: Text("${temp.author} made commit: "),
-          title: Text(temp.message),
+        child: Column(
+          children: <Widget>[
+            buildLeadingIconBar(temp.author, "committed"),
+            ListTile(
+              // leading: buildLeadingIcon(temp.author, "commented"),
+              title: Text(temp.message),
+            )
+          ],
         ));
     case LabeledEvent:
       LabeledEvent temp = timelineItem;
       return Card(
-        child: ListTile(
-          leading: Text("${temp.author} added label: "),
-          title: Chip(label: Text(temp.label.labelName, style: TextStyle(fontWeight: FontWeight.bold),), backgroundColor: Color(int.parse(temp.label.colorHex, radix: 16)).withOpacity(1.0),)
+        child: Column(
+          children: <Widget>[
+            buildLeadingIconBar(temp.author, "added label"),
+            ListTile(
+              // leading: buildLeadingIcon(temp.author, "added label"),
+              title: Chip(label: Text(temp.label.labelName, style: TextStyle(fontWeight: FontWeight.bold),), backgroundColor: Color(int.parse(temp.label.colorHex, radix: 16)).withOpacity(1.0),)
+            )
+          ],
         ));
 
     default:
@@ -84,3 +102,26 @@ Widget buildAddLabelButton({
       onPressed: onPressed,
     )
   );
+
+Widget buildLeadingIconBar(String login, String trailingText){
+  return Row(
+    children: <Widget>[
+      buildUserIcon(login, trailingText),
+      Text("  $login $trailingText: ")
+    ],);
+    
+}
+
+Widget buildUserIcon(String login, String trailingText){
+  return FutureBuilder(
+    future: user(login), 
+      builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done)
+          return CircleAvatar(
+            backgroundImage: NetworkImage(snapshot.data.avatarUrl),
+            radius: 15.0,
+          );
+        else
+          return Text("...");
+    });
+}
