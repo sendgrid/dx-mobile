@@ -416,6 +416,7 @@ Future<List> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async 
   }
   else {
     id = id.substring(0, id.length - 1);
+    print("issue id: " +  id);
     final mutationIss = '''
     mutation {
       addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
