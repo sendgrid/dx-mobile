@@ -69,9 +69,11 @@ List<PullRequest> parsePullRequests(
       List<Label> labels = [];
       if (jsonRes[i]['node']['labels']['nodes'].length != 0) {
         for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++) {
+          var id = jsonRes[i]['node']['labels']['nodes'][j]['id'];
+          id = id.substring(0, id.length - 1);
           labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
               jsonRes[i]['node']['labels']['nodes'][j]['color'],
-              jsonRes[i]['node']['labels']['nodes'][j]['id']));
+              id));
         }
       }
 
@@ -90,12 +92,13 @@ List<PullRequest> parsePullRequests(
           for (var j = 0;
               j < jsonRes[i]['node']['labels']['nodes'].length;
               j++) {
+            var id = jsonRes[i]['node']['labels']['nodes'][j]['id'];
+            id = id.substring(0, id.length - 1);
             labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
                 jsonRes[i]['node']['labels']['nodes'][j]['color'],
-                jsonRes[i]['node']['labels']['nodes'][j]['id']));
+                id));
           }
         }
-
         prs.add(PullRequest(
             jsonRes[i]['node']['id'],
             jsonRes[i]['node']['title'],
@@ -120,9 +123,11 @@ List<Issue> parseIssues(String resBody, Repository repo) {
       List<Label> labels = [];
       if (jsonRes[i]['node']['labels']['nodes'].length != 0) {
         for (var j = 0; j < jsonRes[i]['node']['labels']['nodes'].length; j++) {
+          var id = jsonRes[i]['node']['labels']['nodes'][j]['id'];
+          id = id.substring(0, id.length - 1);
           labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
               jsonRes[i]['node']['labels']['nodes'][j]['color'],
-              jsonRes[i]['node']['labels']['nodes'][j]['id']));
+              id));
         }
       }
 
@@ -142,9 +147,11 @@ List<Issue> parseIssues(String resBody, Repository repo) {
           for (var j = 0;
               j < jsonRes[i]['node']['labels']['nodes'].length;
               j++) {
+            var id = jsonRes[i]['node']['labels']['nodes'][j]['id'];
+            id = id.substring(0, id.length - 1);
             labels.add(Label(jsonRes[i]['node']['labels']['nodes'][j]['name'],
                 jsonRes[i]['node']['labels']['nodes'][j]['color'],
-                jsonRes[i]['node']['labels']['nodes'][j]['id']));
+                id));
           }
         }
 
@@ -276,7 +283,9 @@ List<Repository> parseUserRepos(String resBody) {
     List<Label> labels = [];
     List nodes = jsonRes[i]['labels']['nodes'];
     for (var j = 0; j < nodes.length; j++){
-      labels.add(Label(nodes[j]['name'], nodes[j]['color'], nodes[j]['id']));
+      var id = nodes[j]['id'];
+      id = id.substring(0, id.length - 1);
+      labels.add(Label(nodes[j]['name'], nodes[j]['color'], id));
     }
     repos.add(Repository(jsonRes[i]['name'], jsonRes[i]['owner']['login'],jsonRes[i]['nameWithOwner'], labels));
   }

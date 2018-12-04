@@ -167,6 +167,8 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
     for (int i = 0; i < labels.length; i++){
       items.add(MultiSelectDialogItem(i + 1, labels[i]));
     }
+    print("issue labels");
+    print(labels);
 
     final selectedValues = await showDialog<Set<int>>(
       context: context,
@@ -177,7 +179,7 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
       },
     );
 
-    // print(selectedValues);
+    print(selectedValues);
     List<String> labelIds = [];
     if (selectedValues != Set()) {
       for (int i = 0; i < items.length; i++){
@@ -185,7 +187,7 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
           labelIds.add(items[i].label.id);
         }
       }
-      print(labelIds);
+      // print(labelIds);
       addLabel(widget.issue, null, labelIds).then(
       (List labels) {
         _refreshIssueTimelineList(true);
