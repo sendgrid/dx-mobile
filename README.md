@@ -76,9 +76,9 @@ If you have multiple emulators running, you can run the app on all the devices a
 <a name="screenshots"></a>
 # Screenshots
 
-[Dashboard View](screenshots/Dashboard.png)
-[Issue List View](screenshots/IssueList.png)
-[Viewing an Issue](screenshots/ViewIssue.png)
+![Dashboard View](screenshots/Dashboard.png)
+![Issue List View](screenshots/IssueList.png)
+![Viewing an Issue](screenshots/ViewIssue.png)
 
 
 <a name="about"></a>
