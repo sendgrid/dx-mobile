@@ -11,4 +11,7 @@ class Label {
 
   String toString() =>
       '$labelName, $colorHex, $id';
+  
+  bool operator ==(o) => o is Label && o.labelName == labelName && o.id == id;
+
 }

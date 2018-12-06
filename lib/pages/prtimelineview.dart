@@ -171,11 +171,16 @@ class PRTimelineViewState extends State<PRTimelineView> {
   void _showMultiSelect(BuildContext context) async {
     final items = <MultiSelectDialogItem<int>>[];
     List<Label> labels = widget.pr.repo.labels;
+    List<Label> existingLabels = widget.pr.labels;
     for (int i = 0; i < labels.length; i++){
-      items.add(MultiSelectDialogItem(i + 1, labels[i]));
+      if (!existingLabels.contains(labels[i])) {
+        items.add(MultiSelectDialogItem(i + 1, labels[i]));
+      }
     }
-    print("pr labels");
-    print(labels);
+    // print("pr labels");
+    // print(labels);
+    // print("labels on this pr");
+    // print(existingLabels);
 
     final selectedValues = await showDialog<Set<int>>(
       context: context,
