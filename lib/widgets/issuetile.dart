@@ -26,6 +26,8 @@ class IssueTile extends StatelessWidget {
               contentPadding: EdgeInsets.all(1.0),
               leading: Text("${pr.number}"),
               title: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text("${pr.title}"),
                   Text(
@@ -51,6 +53,8 @@ class IssueTile extends StatelessWidget {
           child: ListTile(
               leading: Text("${issue.number}"),
               title: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text("${issue.title}"),
                   Text(
