@@ -5,7 +5,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../github/graphql.dart';
 import '../github/issue.dart';
 import '../github/timeline.dart';
+import '../github/label.dart';
+
 import '../common/timeline_widgets.dart';
+
+import '../widgets/dialogbox.dart';
+import '../widgets/issuetile.dart';
 
 class IssueTimelineView extends StatefulWidget {
   final Future<List<TimelineItem>> issueTimelineList;
@@ -61,6 +66,19 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
           ),
         ),
       ]),
+      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).primaryColor,
+        child: Row(
+          children: <Widget>[
+            buildAddLabelButton(
+              context: context,
+              onPressed: (){
+                _showMultiSelect(context);
+              }
+            )
+          ],
+        )
+      ),
     );
   }
 
@@ -141,5 +159,40 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
       );
     }
     _textEditingController.clear();
+  }
+
+  void _showMultiSelect(BuildContext context) async {
+    final items = <MultiSelectDialogItem<int>>[];
+    List<Label> labels = widget.issue.repo.labels;
+    for (int i = 0; i < labels.length; i++){
+      items.add(MultiSelectDialogItem(i + 1, labels[i]));
+    }
+    print("issue labels");
+    print(labels);
+
+    final selectedValues = await showDialog<Set<int>>(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelectDialog( // edit the code to render it as a bunch of labels
+          items: items
+        );
+      },
+    );
+
+    print(selectedValues);
+    List<String> labelIds = [];
+    if (selectedValues != null) {
+      for (int i = 0; i < items.length; i++){
+        if (selectedValues.contains(items[i].value)){
+          labelIds.add(items[i].label.id);
+        }
+      }
+      // print(labelIds);
+      addLabel(widget.issue, null, labelIds).then(
+      (List labels) {
+        _refreshIssueTimelineList(true);
+      });
+    }
+
   }
 }

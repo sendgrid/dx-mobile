@@ -5,17 +5,19 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../github/pullrequest.dart';
 import '../github/timeline.dart';
 import '../github/graphql.dart';
+import '../github/repository.dart';
+
 import './prtimelineview.dart';
+
+
 import '../widgets/issuetile.dart';
 
 class PRListView extends StatefulWidget {
-  final String owner;
-  final String repoName;
+  final Repository repo;
   final Future<List<PullRequest>> prList;
 
   PRListView(
-    this.owner,
-    this.repoName,
+    this.repo,
     this.prList,
   );
 
@@ -73,26 +75,6 @@ class PRListViewState extends State<PRListView> {
             .map(
               (pullRequest) => Container(
                     child: IssueTile(null, pullRequest)
-                    
-                    // ListTile(
-                    //   title:
-                    //       Text("${pullRequest.title} #${pullRequest.number}"),
-                    //   subtitle: Text("${pullRequest.author}"),
-                    //   onTap: () {
-                    //     // call query that displays page with the PR's info
-                    //     Future<List<TimelineItem>> timelines =
-                    //         getPRTimeline(pullRequest);
-                    //     // display them
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) =>
-                    //             PRTimelineView(timelines, pullRequest),
-                    //       ),
-                    //     );
-                    //   },
-                    //   //trailing: StarWidget(pullRequest.repo.starCount),
-                    // ),
             ))
             .toList(),
       ),
@@ -100,7 +82,7 @@ class PRListViewState extends State<PRListView> {
   }
 
   void _refreshPRList(bool b) {
-    prList = getPRs(widget.owner, widget.repoName);
+    prList = getPRs(widget.repo);
     //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
     // can look into making this better later on
 
@@ -112,8 +94,7 @@ class PRListViewState extends State<PRListView> {
         Animation<double> secondAnimation,
       ) {
         return PRListView(
-          widget.owner,
-          widget.repoName,
+          widget.repo,
           prList,
         );
       }, transitionsBuilder: (

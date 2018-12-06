@@ -16,9 +16,11 @@ import 'timeline.dart';
 import 'repository.dart';
 import 'token.dart';
 import 'user.dart';
+import 'label.dart';
 
 final url = 'https://api.github.com/graphql';
-final headers = {'Authorization': 'bearer $token'};
+// updated this to allow use of preview stuff in the GraphQL API
+final headers = {'Authorization': 'bearer $token', 'Accept': 'application/vnd.github.starfire-preview+json'};
 final postHeaders = {'Authorization': 'token $token'};
 
 /// Fetches the details of the specified user
@@ -135,10 +137,10 @@ _removeSpuriousSpacing(String str) => str.replaceAll(RegExp(r'\s+'), ' ');
 // NON CHROMIUM AUTHOR CODE BELOW (the code below is under MIT license)
 
 // getBranches retrieves the number of branches in a repo
-Future<int> getBranches(String owner, String repoName) async {
+Future<int> getBranches(Repository repo) async {
   final query = '''
     query {
-      repository(name: "$repoName", owner: "$owner") {
+      repository(name: "${repo.name}", owner: "${repo.owner}") {
         refs(last: 100 , refPrefix:"refs/heads/") {
           totalCount
         }
@@ -151,10 +153,10 @@ Future<int> getBranches(String owner, String repoName) async {
 }
 
 // getReleases retrieves the number of releases in a repo
-Future<int> getReleases(String owner, String repoName) async {
+Future<int> getReleases(Repository repo) async {
   final query = '''
     query {
-      repository(name: "$repoName", owner: "$owner") {
+      repository(name: "${repo.name}", owner: "${repo.owner}") {
         refs(refPrefix:"refs/tags/") {
           totalCount
         }
@@ -167,11 +169,11 @@ Future<int> getReleases(String owner, String repoName) async {
 }
 
 // getPRs retrieves pull requests from a given repo/owner
-Future<List<PullRequest>> getPRs(String owner, String repoName) async {
+Future<List<PullRequest>> getPRs(Repository repo) async {
   final query =
   '''
   query {
-    search (query: "type:pr state:open repo:$owner/$repoName", type: ISSUE, first: 100){
+    search (query: "type:pr state:open repo:${repo.nameWithOwner}", type: ISSUE, first: 100){
       edges {
         node {
           ... on PullRequest {
@@ -183,6 +185,7 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
               nodes {
                 name
                 color
+                id
               }
             }
             author {
@@ -197,15 +200,15 @@ Future<List<PullRequest>> getPRs(String owner, String repoName) async {
 
   final result = await _query(query);
   // print(result);
-  return parsePullRequests(result, owner, repoName);
+  return parsePullRequests(result, repo);
 }
 
 // getIssues retrieves the open issues for a given repo
-Future<List<Issue>> getIssues(String owner, String repoName) async {
+Future<List<Issue>> getIssues(Repository repo) async {
   final query =
   '''
   query {
-    search (query: "type:issue state:open repo:$owner/$repoName", type: ISSUE, first: 100){
+    search (query: "type:issue state:open repo:${repo.nameWithOwner}", type: ISSUE, first: 100){
       edges {
         node {
           ... on Issue {
@@ -218,6 +221,7 @@ Future<List<Issue>> getIssues(String owner, String repoName) async {
               nodes {
                 name
                 color
+                id
               }
             }
             author {
@@ -231,7 +235,7 @@ Future<List<Issue>> getIssues(String owner, String repoName) async {
   ''';
   final result = await _query(query);
   // print(result);
-  return parseIssues(result, owner, repoName);
+  return parseIssues(result, repo);
 }
 
 // getPRTimeline retrieves timeline from a specific PR of an organization's repo
@@ -241,6 +245,10 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
     query {
       repository(owner: "$owner", name: "${pullRequest.repo.name}") {
         pullRequest(number: ${pullRequest.number}) {
+          body
+          author {
+            login
+          }
           timeline(last: 100) {
             edges {
               node {
@@ -267,6 +275,8 @@ Future<List<TimelineItem>> getPRTimeline(PullRequest pullRequest) async {
                   label {
                     name
                     url
+                    color
+                    id
                   }
                   actor {
                     login
@@ -290,6 +300,10 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
     query {
       repository(owner: "$owner", name: "${issue.repo.name}") {
         issue(number: ${issue.number}) {
+          body
+          author {
+            login
+          }
           timeline(last: 100) {
             edges {
               node {
@@ -316,6 +330,8 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
                   label {
                     name
                     url
+                    color
+                    id
                   }
                   actor {
                     login
@@ -332,7 +348,7 @@ Future<List<TimelineItem>> getIssueTimeline(Issue issue) async {
   return parseIssueTimeline(result, issue);
 }
 
-// addComment adds a comment to a issue/pr
+// addComment adds a comment to an issue/pr
 Future<IssueComment> addComment(Issue issue, PullRequest pr, String commentBody) async {
   // issue will be null if it's for a PullRequest
   // pr will be null if it's for an Issue
@@ -366,6 +382,69 @@ Future<IssueComment> addComment(Issue issue, PullRequest pr, String commentBody)
 
 }
 
+// addLabel adds a label to an issue/pr
+Future<List> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async {
+  // issue will be null if it's for a PullRequest
+  // pr will be null if it's for an Issue
+  String id = "";
+  if (issue == null) {
+    id = pr.id;
+  } else {
+    id = issue.id;
+  }
+  print(id);
+
+  var result;
+  if (issue == null) {
+    print("pr id: " + id);
+    final mutationPR = '''
+    mutation {
+      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+        labelable {
+          ... on PullRequest {
+            labels (first: 30){
+              nodes {
+                name
+                color
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+    ''';
+    result = await _query(mutationPR);
+  }
+  else {
+    print("issue id: " +  id);
+    id = id.substring(0, id.length - 1);
+    print("id after stripping =: " + id);
+    final mutationIss = '''
+    mutation {
+      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+        labelable {
+          ... on Issue {
+            labels (first: 30){
+              nodes {
+                name
+                color
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+    ''';
+    print(mutationIss);
+    result = await _query(mutationIss);
+    print('issue');
+  }
+  print(result);
+  return parseAddedLabels(result, pr, issue);
+}
+
 // fetchUserRepos retrieves the repositories that the viewer has contributed to
 Future<List<Repository>> fetchUserRepos() async{
   final query = '''
@@ -377,6 +456,16 @@ Future<List<Repository>> fetchUserRepos() async{
           name
           url
           nameWithOwner
+          owner {
+            login
+          }
+          labels(last: 100){
+            nodes {
+              color
+              name
+              id
+            }
+          }
         }
       }
     }

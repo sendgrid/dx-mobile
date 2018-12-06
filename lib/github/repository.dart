@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. (https://github.com/efortuna/dwmpr/blob/master/LICENSE)
 
+// NON-CHROMIUM AUTHOR CODE
+import 'label.dart';
+
 class Repository {
   // ORIGINAL CHROMIUM AUTHOR CODE
   final String name;
@@ -9,8 +12,10 @@ class Repository {
 
   // NON-CHROMIUM AUTHOR CODE
   final String nameWithOwner;
+  final String owner;
+  final List<Label> labels;
 
-  Repository(this.name, this.nameWithOwner);
+  Repository(this.name, this.owner, this.nameWithOwner, this.labels);
   
   String toString() => 'Repository: $nameWithOwner';
 
