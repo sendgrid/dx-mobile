@@ -399,7 +399,7 @@ Future<List> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async 
     print("pr id: " + id);
     final mutationPR = '''
     mutation {
-      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:"$id"}) {
         labelable {
           ... on PullRequest {
             labels (first: 30){
@@ -417,12 +417,12 @@ Future<List> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async 
     result = await _query(mutationPR);
   }
   else {
-    print("issue id: " +  id);
-    id = id.substring(0, id.length - 1);
-    print("id after stripping =: " + id);
+    // print("issue id: " +  id);
+    // id = id.substring(0, id.length - 1);
+    // print("id after stripping =: " + id);
     final mutationIss = '''
     mutation {
-      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:"$id"}) {
         labelable {
           ... on Issue {
             labels (first: 30){

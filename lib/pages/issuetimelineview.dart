@@ -189,7 +189,7 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
     if (selectedValues != null) {
       for (int i = 0; i < items.length; i++){
         if (selectedValues.contains(items[i].value)){
-          labelIds.add(items[i].label.id);
+          labelIds.add("\"" + items[i].label.id + "\"");
         }
       }
       // print(labelIds);
