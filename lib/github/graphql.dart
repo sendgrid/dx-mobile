@@ -422,7 +422,7 @@ Future<List> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async 
     print("id after stripping =: " + id);
     final mutationIss = '''
     mutation {
-      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:$id}) {
+      addLabelsToLabelable(input:{labelIds:$labelIds, labelableId:"$id"}) {
         labelable {
           ... on Issue {
             labels (first: 30){
