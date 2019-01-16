@@ -42,6 +42,24 @@ class IssueListViewState extends State<IssueListView> {
             Navigator.pop(context);
           },
         ),
+        actions: <Widget>[
+          IconButton(
+            tooltip: 'Search',
+            icon: const Icon(Icons.search),
+            onPressed: () async {
+              print("searching");
+              final selected = await showSearch(
+                context: context,
+                delegate: IssueSearchDelegate(context)
+              );
+              // if (selected != null && selected != _lastIntegerSelected) {
+              //   setState(() {
+              //     _lastIntegerSelected = selected;
+              //   });
+              // }
+            },
+          ),
+        ],
       );
 
   Widget _buildIssueList(
@@ -111,4 +129,59 @@ class IssueListViewState extends State<IssueListView> {
       ),
     );
   }
+}
+
+class IssueSearchDelegate extends SearchDelegate {
+
+  IssueSearchDelegate(BuildContext context);
+
+  @override
+    List<Widget> buildActions(BuildContext context) {
+      return [
+        IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            query = '';
+          },
+        ),
+      ];
+    }
+
+  @override
+    Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+    }
+
+  @override
+    Widget buildResults(BuildContext context) {
+      if (query.length < 3) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Center(
+              child: Text(
+                "Search term must be longer than two letters.",
+              ),
+            )
+          ],
+        );
+      }
+      else {
+        return Column(
+          children: <Widget>[
+          Text("Got results")
+        ],);
+      }
+    }
+
+  @override
+    Widget buildSuggestions(BuildContext context) {
+      return Column();
+    }
+      
 }
