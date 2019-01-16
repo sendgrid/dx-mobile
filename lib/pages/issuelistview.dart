@@ -48,9 +48,10 @@ class IssueListViewState extends State<IssueListView> {
             icon: const Icon(Icons.search),
             onPressed: () async {
               print("searching");
+              List<dynamic> tempList = await issueList;
               final selected = await showSearch(
                 context: context,
-                delegate: IssueSearchDelegate(context)
+                delegate: IssueSearchDelegate(context, tempList)
               );
               // if (selected != null && selected != _lastIntegerSelected) {
               //   setState(() {
@@ -132,8 +133,8 @@ class IssueListViewState extends State<IssueListView> {
 }
 
 class IssueSearchDelegate extends SearchDelegate {
-
-  IssueSearchDelegate(BuildContext context);
+  List<dynamic> issues;
+  IssueSearchDelegate(BuildContext context, this.issues);
 
   @override
     List<Widget> buildActions(BuildContext context) {
@@ -159,24 +160,20 @@ class IssueSearchDelegate extends SearchDelegate {
 
   @override
     Widget buildResults(BuildContext context) {
-      if (query.length < 3) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Center(
-              child: Text(
-                "Search term must be longer than two letters.",
-              ),
-            )
-          ],
-        );
+      List<Widget> results = [];
+      for (int i = 0; i < issues.length; i++) {
+        if (issues[i].runtimeType == Issue){
+          Issue issue = issues[i];
+          print(issue.title);
+          if (issue.title.toLowerCase().contains(query.toLowerCase()) || issue.number == int.tryParse(query)){
+            results.add(IssueTile(issue, null));
+          }
+        }
       }
-      else {
-        return Column(
-          children: <Widget>[
-          Text("Got results")
-        ],);
-      }
+      print(results);
+      return ListView(
+        children: results,
+      );
     }
 
   @override
