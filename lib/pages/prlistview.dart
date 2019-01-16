@@ -6,11 +6,13 @@ import '../github/pullrequest.dart';
 import '../github/timeline.dart';
 import '../github/graphql.dart';
 import '../github/repository.dart';
+import '../github/label.dart';
 
 import './prtimelineview.dart';
 
 
 import '../widgets/issuetile.dart';
+import '../widgets/dialogbox.dart';
 
 class PRListView extends StatefulWidget {
   final Repository repo;
@@ -46,14 +48,13 @@ class PRListViewState extends State<PRListView> {
             tooltip: 'Search',
             icon: const Icon(Icons.search),
             onPressed: () async {
-              print("searching");
               List<dynamic> tempList = await prList;
               final selected = await showSearch(
                 context: context,
-                delegate: PRSearchDelegate(context, tempList)
+                delegate: PRSearchDelegate(context, tempList, widget.repo)
               );
             },
-          ),
+          )
         ],
         ),
         body: FutureBuilder(future: prList, builder: _buildPRList));
@@ -129,7 +130,10 @@ class PRListViewState extends State<PRListView> {
 
 class PRSearchDelegate extends SearchDelegate {
   List<dynamic> prs;
-  PRSearchDelegate(BuildContext context, this.prs);
+  Repository repo;
+  dynamic searchLabels = [];
+
+  PRSearchDelegate(BuildContext context, this.prs, this.repo);
 
   @override
     List<Widget> buildActions(BuildContext context) {
@@ -138,8 +142,18 @@ class PRSearchDelegate extends SearchDelegate {
           icon: Icon(Icons.clear),
           onPressed: () {
             query = '';
+            searchLabels = [];
           },
         ),
+        IconButton(
+          tooltip: "Filter",
+          icon: const Icon(Icons.label),
+          onPressed: () async {
+            // List<dynamic> tempList = await prList;
+            query = '';
+            _getLabelSearch(context);
+          }
+        )
       ];
     }
 
@@ -156,16 +170,33 @@ class PRSearchDelegate extends SearchDelegate {
   @override
     Widget buildResults(BuildContext context) {
       List<Widget> results = [];
-      for (int i = 0; i < prs.length; i++) {
-        if (prs[i].runtimeType == PullRequest){
-          PullRequest pr = prs[i];
-          print(pr.title);
-          if (pr.title.toLowerCase().contains(query.toLowerCase()) || pr.number == int.tryParse(query)){
-            results.add(IssueTile(null, pr));
+      // check for string queries
+      if (query != '' && searchLabels.length == 0){
+        for (int i = 0; i < prs.length; i++) {
+          if (prs[i].runtimeType == PullRequest){
+            PullRequest pr = prs[i];
+            if (pr.title.toLowerCase().contains(query.toLowerCase()) || pr.number == int.tryParse(query)){
+              results.add(IssueTile(null, pr));
+            }
           }
         }
       }
-      print(results);
+      else {
+        for (int i = 0; i < prs.length; i++) {
+          if (prs[i].runtimeType == PullRequest){
+            PullRequest pr = prs[i];
+            if (pr.labels.length != 0){
+              for (int j = 0; j < pr.labels.length; j++) {
+                if (searchLabels.contains(pr.labels[j].id)) {
+                  print('found');
+                  results.add(IssueTile(null, pr));
+                }
+              }
+            }
+          }
+        }
+      }
+      
       return ListView(
         children: results,
       );
@@ -174,6 +205,35 @@ class PRSearchDelegate extends SearchDelegate {
   @override
     Widget buildSuggestions(BuildContext context) {
       return Column();
-    }
+    } 
+
+    void _getLabelSearch(BuildContext context) async {
+      final items = <MultiSelectDialogItem<int>>[];
+      List<Label> labels = repo.labels;
+      for (int i = 0; i < labels.length; i++){
+        items.add(MultiSelectDialogItem(i + 1, labels[i]));
+      }
+
+      final selectedValues = await showDialog<Set<int>>(
+        context: context,
+        builder: (BuildContext context) {
+          return MultiSelectDialog( // edit the code to render it as a bunch of labels
+            items: items
+          );
+        },
+      );
+
+      List<String> labelIds = [];
+      if (selectedValues != null) {
+        for (int i = 0; i < items.length; i++){
+          if (selectedValues.contains(items[i].value)){
+            labelIds.add(items[i].label.id);
+          }
+        }
+      }
       
+      searchLabels = labelIds;
+      buildResults(context);
+
+    }
 }
