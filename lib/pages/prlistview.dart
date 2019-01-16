@@ -41,6 +41,20 @@ class PRListViewState extends State<PRListView> {
             icon: Icon(Icons.arrow_back_ios, color: Colors.white),
             onPressed: () => Navigator.pop(context),
           ),
+        actions: <Widget>[
+          IconButton(
+            tooltip: 'Search',
+            icon: const Icon(Icons.search),
+            onPressed: () async {
+              print("searching");
+              List<dynamic> tempList = await prList;
+              final selected = await showSearch(
+                context: context,
+                delegate: PRSearchDelegate(context, tempList)
+              );
+            },
+          ),
+        ],
         ),
         body: FutureBuilder(future: prList, builder: _buildPRList));
   }
@@ -111,4 +125,55 @@ class PRListViewState extends State<PRListView> {
     );
     b = true;
   }
+}
+
+class PRSearchDelegate extends SearchDelegate {
+  List<dynamic> prs;
+  PRSearchDelegate(BuildContext context, this.prs);
+
+  @override
+    List<Widget> buildActions(BuildContext context) {
+      return [
+        IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            query = '';
+          },
+        ),
+      ];
+    }
+
+  @override
+    Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+    }
+
+  @override
+    Widget buildResults(BuildContext context) {
+      List<Widget> results = [];
+      for (int i = 0; i < prs.length; i++) {
+        if (prs[i].runtimeType == PullRequest){
+          PullRequest pr = prs[i];
+          print(pr.title);
+          if (pr.title.toLowerCase().contains(query.toLowerCase()) || pr.number == int.tryParse(query)){
+            results.add(IssueTile(null, pr));
+          }
+        }
+      }
+      print(results);
+      return ListView(
+        children: results,
+      );
+    }
+
+  @override
+    Widget buildSuggestions(BuildContext context) {
+      return Column();
+    }
+      
 }

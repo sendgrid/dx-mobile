@@ -53,11 +53,6 @@ class IssueListViewState extends State<IssueListView> {
                 context: context,
                 delegate: IssueSearchDelegate(context, tempList)
               );
-              // if (selected != null && selected != _lastIntegerSelected) {
-              //   setState(() {
-              //     _lastIntegerSelected = selected;
-              //   });
-              // }
             },
           ),
         ],
