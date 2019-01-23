@@ -9,6 +9,7 @@ import '../github/repository.dart';
 import '../github/label.dart';
 
 import './prtimelineview.dart';
+import './searchpage.dart';
 
 
 import '../widgets/issuetile.dart';
@@ -49,10 +50,30 @@ class PRListViewState extends State<PRListView> {
             icon: const Icon(Icons.search),
             onPressed: () async {
               List<dynamic> tempList = await prList;
-              final selected = await showSearch(
-                context: context,
-                delegate: PRSearchDelegate(context, tempList, widget.repo)
-              );
+              Navigator.push(context,
+              PageRouteBuilder(pageBuilder: (
+                BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondAnimation,
+              ) {
+                return SearchPage(
+                  tempList, null, widget.repo
+                );
+              }, transitionsBuilder: (
+                BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondAnimation,
+                Widget child,
+              ) {
+                return FadeTransition(
+                  opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
+                  child: child,
+                );
+              }),);
+              // final selected = await showSearch(
+              //   context: context,
+              //   delegate: PRSearchDelegate(context, tempList, widget.repo)
+              // );
             },
           )
         ],
