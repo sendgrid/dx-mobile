@@ -415,6 +415,14 @@ class UserBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      return Column(
+        children: [
+          CircleAvatar(backgroundColor: Colors.grey),
+          Text("ghost")
+        ]
+      );
+    }
     return Column(
       children: [
         CircleAvatar(
