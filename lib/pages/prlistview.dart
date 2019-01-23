@@ -188,7 +188,6 @@ class PRSearchDelegate extends SearchDelegate {
             if (pr.labels.length != 0){
               for (int j = 0; j < pr.labels.length; j++) {
                 if (searchLabels.contains(pr.labels[j].id)) {
-                  print('found');
                   results.add(IssueTile(null, pr));
                 }
               }

@@ -185,7 +185,6 @@ class IssueSearchDelegate extends SearchDelegate {
             if (issue.labels.length != 0){
               for (int j = 0; j < issue.labels.length; j++) {
                 if (searchLabels.contains(issue.labels[j].id)) {
-                  print('found');
                   results.add(IssueTile(issue, null));
                 }
               }
