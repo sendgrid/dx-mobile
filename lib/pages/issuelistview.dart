@@ -2,17 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../pages/issuetimelineview.dart';
-import '../github/timeline.dart';
 import '../github/graphql.dart';
 import '../github/issue.dart';
 import '../github/repository.dart';
-import '../github/label.dart';
 
 import './searchpage.dart';
 
 import '../widgets/issuetile.dart';
-import '../widgets/dialogbox.dart';
 
 class IssueListView extends StatefulWidget {
   final Repository repo;
@@ -43,32 +39,31 @@ class IssueListViewState extends State<IssueListView> {
         ),
         actions: <Widget>[
           IconButton(
-            tooltip: 'Search',
-            icon: const Icon(Icons.search),
-            onPressed: () async {
-              List<dynamic> tempList = await issueList;
-              Navigator.push(context,
-              PageRouteBuilder(pageBuilder: (
-                BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondAnimation,
-              ) {
-                return SearchPage(
-                  null, tempList, widget.repo
+              tooltip: 'Search',
+              icon: const Icon(Icons.search),
+              onPressed: () async {
+                List<dynamic> tempList = await issueList;
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(pageBuilder: (
+                    BuildContext context,
+                    Animation<double> animation,
+                    Animation<double> secondAnimation,
+                  ) {
+                    return SearchPage(null, tempList, widget.repo);
+                  }, transitionsBuilder: (
+                    BuildContext context,
+                    Animation<double> animation,
+                    Animation<double> secondAnimation,
+                    Widget child,
+                  ) {
+                    return FadeTransition(
+                      opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
+                      child: child,
+                    );
+                  }),
                 );
-              }, transitionsBuilder: (
-                BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondAnimation,
-                Widget child,
-              ) {
-                return FadeTransition(
-                  opacity: Tween(begin: 0.0, end: 10.0).animate(animation),
-                  child: child,
-                );
-              }),);
-            }
-          ),
+              }),
         ],
       ),
       body: FutureBuilder(future: issueList, builder: _buildIssueList),
@@ -134,10 +129,7 @@ class IssueListViewState extends State<IssueListView> {
       controller: rc,
       child: ListView(
         children: issues
-            .map(
-              (issue) => Container(
-              child: IssueTile(issue, null)
-            ))
+            .map((issue) => Container(child: IssueTile(issue, null)))
             .toList(),
       ),
     );
