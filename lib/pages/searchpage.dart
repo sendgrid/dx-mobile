@@ -79,7 +79,6 @@ class SearchPageState extends State<SearchPage> {
                   // List<dynamic> tempList = await prList;
                   query = '';
                   _getLabelSearch(context);
-                  results = getSearchResults(query, searchLabels);
                 }
               )
             ],
@@ -114,13 +113,13 @@ class SearchPageState extends State<SearchPage> {
       }
       
       searchLabels = labelIds;
-      
+      results = getSearchResults(query, searchLabels);
+      transitionToResults();
 
     }
 
     Widget getSearchResults(String query, List searchLabels) {
       List<Widget> results = [];
-      
       if (prList == null){
         for (int i = 0; i < issueList.length; i++) {
           if (issueList[i].runtimeType == Issue){
@@ -158,7 +157,6 @@ class SearchPageState extends State<SearchPage> {
           }
         }
       }
-      print(results.toString());
       
       return ListView(
         children: results,

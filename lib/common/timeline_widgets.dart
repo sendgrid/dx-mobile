@@ -116,12 +116,16 @@ Widget buildUserIcon(String login, String trailingText){
   return FutureBuilder(
     future: user(login), 
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done)
+        if (snapshot.connectionState == ConnectionState.done){
+          if (snapshot.data == null){
+            return CircleAvatar();
+          }
           return CircleAvatar(
             backgroundImage: NetworkImage(snapshot.data.avatarUrl),
             radius: 15.0,
           );
-        else
+        }else {
           return Text("...");
+        }
     });
 }
