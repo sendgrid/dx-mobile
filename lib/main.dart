@@ -8,8 +8,11 @@ import 'github/graphql.dart' as graphql;
 // import 'github/issue.dart';
 
 // import 'review_code.dart';
+import 'pages/loginpage.dart';
 import 'pages/dashboard.dart';
 import 'pages/repolist.dart';
+import 'pages/userpage.dart';
+import 'pages/loginpage.dart';
 
 void main() => runApp(MyApp());
 
@@ -38,7 +41,7 @@ class MyAppState extends State<MyApp> {
             brightness: Brightness.light,
             primarySwatch: Colors.blue,
             accentColor: Colors.black45),
-        home: RepoListView(graphql.fetchUserRepos()), //Dashboard(
+        home: LoginPage(),//RepoListView(graphql.fetchUserRepos()), //Dashboard(
         //      owner, repoName, prList, issueList, numBranches, numReleases),
         routes: {
           // probably can't have routes here besides login and home dashboard
@@ -52,6 +55,8 @@ class MyAppState extends State<MyApp> {
           //     graphql.getIssues(owner, repoName),
           //     graphql.getBranches(owner, repoName),
           //     graphql.getReleases(owner, repoName))
+          '/userpage': (BuildContext context) => new UserPage(),
+          '/loginpage': (BuildContext context) => new LoginPage()
         });
   }
 }
