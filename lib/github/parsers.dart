@@ -13,8 +13,7 @@ import 'user.dart';
 import 'label.dart';
 
 /// Parses a Github GraphQL user response
-User parseUser(String resBody) {
-  final jsonRes = json.decode(resBody)['data'];
+User parseUser(Map<String,dynamic> jsonRes) {
   final userJson = jsonRes['viewer'] ?? jsonRes['user'];
   return User(userJson['login'], userJson['name'], userJson['avatarUrl']);
 }
@@ -44,23 +43,23 @@ User parseUser(String resBody) {
 // NON CHROMIUM AUTHOR CODE BELOW (the code below is under MIT license)
 
 // parseBranches parses the result from the GraphQL query for fetching the # of branches
-int parseBranches(String resBody) {
+int parseBranches(Map<String,dynamic> resBody) {
   int jsonRes =
-      json.decode(resBody)['data']['repository']['refs']['totalCount'];
+      resBody['repository']['refs']['totalCount'];
   return jsonRes;
 }
 
 // parseReleases parses the result from the GraphQL query for fetching the # of releases
-int parseReleases(String resBody) {
+int parseReleases(Map<String,dynamic> resBody) {
   int jsonRes =
-      json.decode(resBody)['data']['repository']['refs']['totalCount'];
+      resBody['repository']['refs']['totalCount'];
   return jsonRes;
 }
 
 // parsePullRequests parses the result from the GraphQL query for fetching the PRs for a repo
 List<PullRequest> parsePullRequests(
-    String resBody, Repository repo) {
-  List jsonRes = json.decode(resBody)['data']['search']['edges'];
+    Map<String,dynamic> resBody, Repository repo) {
+  List jsonRes = resBody['search']['edges'];
 
 
   List<PullRequest> prs = [];
@@ -114,8 +113,8 @@ List<PullRequest> parsePullRequests(
 }
 
 // parseIssues parses the result from the GraphQL query for fetching the issues for a repo
-List<Issue> parseIssues(String resBody, Repository repo) {
-  List jsonRes = json.decode(resBody)['data']['search']['edges'];
+List<Issue> parseIssues(Map<String,dynamic> resBody, Repository repo) {
+  List jsonRes = resBody['search']['edges'];
 
   List<Issue> issues = [];
   for (var i = 0; i < jsonRes.length; i++) {
@@ -171,12 +170,12 @@ List<Issue> parseIssues(String resBody, Repository repo) {
 }
 
 // parsePRTimeline parses the result from the GraphQL query for fetching the timeline for a PR
-List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
-  List jsonRes = json.decode(resBody)['data']['repository']['pullRequest']
+List<TimelineItem> parsePRTimeline(Map<String,dynamic> resBody, PullRequest pr) {
+  List jsonRes = resBody['repository']['pullRequest']
       ['timeline']['edges'];
 
   List<TimelineItem> prTimeline = [];
-  Map tmp = json.decode(resBody)['data']['repository']['pullRequest'];
+  Map tmp = resBody['repository']['pullRequest'];
   prTimeline.add(
       IssueComment(pr, null, "", "", "", tmp['author']['login'], tmp['body']));
   for (var i = 0; i < jsonRes.length; i++) {
@@ -222,12 +221,12 @@ List<TimelineItem> parsePRTimeline(String resBody, PullRequest pr) {
 }
 
 // parseIssueTimeline parses the result from the GraphQL query for fetching the timeline for an issue
-List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
+List<TimelineItem> parseIssueTimeline(Map<String,dynamic> resBody, Issue issue) {
   List jsonRes =
-      json.decode(resBody)['data']['repository']['issue']['timeline']['edges'];
+      resBody['repository']['issue']['timeline']['edges'];
 
   List<TimelineItem> issueTimeline = [];
-  Map tmp = json.decode(resBody)['data']['repository']['issue'];
+  Map tmp = resBody['repository']['issue'];
   issueTimeline.add(IssueComment(
       null, issue, "", "", "", tmp['author']['login'], tmp['body']));
   for (var i = 0; i < jsonRes.length; i++) {
@@ -273,9 +272,9 @@ List<TimelineItem> parseIssueTimeline(String resBody, Issue issue) {
 }
 
 // parseUserRepos parses the result from the GraphQL query for fetching the repositories for a user
-List<Repository> parseUserRepos(String resBody) {
+List<Repository> parseUserRepos(Map<String,dynamic> resBody) {
   List jsonRes =
-      json.decode(resBody)['data']['viewer']['repositories']['nodes'];
+      resBody['viewer']['repositories']['nodes'];
 
   List<Repository> repos = [];
 
@@ -294,17 +293,17 @@ List<Repository> parseUserRepos(String resBody) {
 }
 
 // parseAddedComment parses the response received after calling addComment mutation
-IssueComment parseAddedComment(String resBody, PullRequest pr, Issue issue) {
+IssueComment parseAddedComment(Map<String,dynamic> resBody, PullRequest pr, Issue issue) {
   Map jsonRes =
-      json.decode(resBody)['data']['addComment']['commentEdge']['node'];
-  Map jsonTemp = json.decode(resBody)['data']['addComment'];
+      resBody['addComment']['commentEdge']['node'];
+  Map jsonTemp = resBody['addComment'];
 
   return IssueComment(pr, issue, "", jsonRes['url'], jsonTemp['subject']['id'],
       jsonRes['author']['login'], jsonRes['bodyText']);
 }
 
-List parseAddedLabels(String resBody, PullRequest pr, Issue issue) {
+List parseAddedLabels(Map<String,dynamic> resBody, PullRequest pr, Issue issue) {
   List labels =
-      json.decode(resBody)['data']['addLabelsToLabelable']['labelable']['labels']['nodes'];
+      resBody['addLabelsToLabelable']['labelable']['labels']['nodes'];
   return labels;
 }
