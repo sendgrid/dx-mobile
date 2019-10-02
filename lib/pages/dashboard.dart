@@ -366,14 +366,14 @@ class _DashboardState extends State<Dashboard> {
 
   }
 
-  void _refreshDashboard(bool b) {
+  void _refreshDashboard() {
     setState(() {
       prList = graphql.getPRs(widget.repo);
       issueList = graphql.getIssues(widget.repo);
       branches = graphql.getBranches(widget.repo);
       releases = graphql.getReleases(widget.repo);
 
-      rc.sendBack(true, RefreshStatus.completed);
+      rc.loadComplete();
 
       Navigator.pushReplacement(
         context,
@@ -404,7 +404,6 @@ class _DashboardState extends State<Dashboard> {
       );
     });
 
-    b = true;
   }
 }
 

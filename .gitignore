@@ -3,6 +3,7 @@
 .packages
 .pub/
 
+ios/Flutter/flutter_export_environment.sh
 ios/.generated/
 ios/Pods/
 ios/Podfile.lock
