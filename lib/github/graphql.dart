@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:graphql/client.dart';
 
 import 'parsers.dart';
 import 'pullrequest.dart';
@@ -18,10 +19,27 @@ import 'token.dart';
 import 'user.dart';
 import 'label.dart';
 
-final url = 'https://api.github.com/graphql';
+// final url = 'https://api.github.com/graphql';
 // updated this to allow use of preview stuff in the GraphQL API
-final headers = {'Authorization': 'bearer $token', 'Accept': 'application/vnd.github.starfire-preview+json'};
+// final headers = {'Authorization': 'bearer $token', 'Accept': 'application/vnd.github.starfire-preview+json'};
 final postHeaders = {'Authorization': 'token $token'};
+
+final HttpLink _httpLink = HttpLink(
+    uri: 'https://api.github.com/graphql',
+    headers: {'Accept': 'application/vnd.github.starfire-preview+json'}
+);
+
+final AuthLink _authLink = AuthLink(
+    getToken: () async => 'bearer $token',
+    
+);
+
+final Link _link = _authLink.concat(_httpLink);
+
+final GraphQLClient _client = GraphQLClient(
+        cache: InMemoryCache(),
+        link: _link,
+    );
 
 /// Fetches the details of the specified user
 Future<User> user(String login) async {
@@ -98,22 +116,61 @@ addEmoji(String id, String reaction) async {
       }
     }
     ''';
-  await _query(query);
+  await _mutation(query);
 }
 
-acceptPR(String reviewUrl) async {
-  var response = await http.put('$reviewUrl/merge', headers: postHeaders);
-  return response.statusCode == 200
-      ? response.body
-      : throw Exception('Error: ${response.statusCode} ${response.body}');
+acceptPR(String pullRequestID) async {
+  var mutation = '''
+    mutation MergePullRequest {
+      mergePullRequest(input:{pullRequestID:"$pullRequestID"}) {
+        clientMutationId
+        pullRequest {
+          url
+          title
+          id
+          number
+          labels (first: 30) {
+            nodes {
+              name
+              color
+              id
+            }
+          }
+          author {
+            login
+          }
+        }
+      }
+    }
+    ''';
+  return await _mutation(mutation);
 }
 
-closePR(String reviewUrl) async {
-  var response = await http.patch(reviewUrl,
-      headers: postHeaders, body: '{"state": "closed"}');
-  return response.statusCode == 200
-      ? response.body
-      : throw Exception('Error: ${response.statusCode} ${response.body}');
+closePR(String pullRequestID) async {
+  var mutation = '''
+    mutation ClosePullRequest {
+      closePullRequest(input:{pullRequestID:"$pullRequestID"}) {
+        clientMutationId
+        pullRequest {
+          url
+          title
+          id
+          number
+          labels (first: 30) {
+            nodes {
+              name
+              color
+              id
+            }
+          }
+          author {
+            login
+          }
+        }
+      }
+    }
+    ''';
+  return await _mutation(mutation);
 }
 
 getDiff(PullRequest pullRequest) async {
@@ -121,16 +178,21 @@ getDiff(PullRequest pullRequest) async {
   return response.body;
 }
 
-/// Sends a GraphQL query to Github and returns raw response
-Future<String> _query(String query) async {
-  final gqlQuery = json.encode({'query': _removeSpuriousSpacing(query)});
-  final response = await http.post(url, headers: headers, body: gqlQuery);
-  return response.statusCode == 200
-      ? response.body
-      : throw Exception('Error: ${response.statusCode}');
+/// Sends a GraphQL query to Github and returns response
+Future<dynamic> _query(String query) async {
+  final QueryResult response = await _client.query(QueryOptions(document: query));
+  return !response.hasErrors
+      ? response.data
+      : throw Exception('Error: ${response.errors}');
 }
 
-_removeSpuriousSpacing(String str) => str.replaceAll(RegExp(r'\s+'), ' ');
+/// Sends a GraphQL mutation to Github and returns response
+Future<dynamic> _mutation(String mutation) async {
+  final QueryResult response = await _client.mutate(MutationOptions(document: mutation));
+  return !response.hasErrors
+      ? response.data
+      : throw Exception('Error: ${response.errors}');
+}
 
 
 // -------------------------------------------------------------------------------------
@@ -377,7 +439,7 @@ Future<IssueComment> addComment(Issue issue, PullRequest pr, String commentBody)
   }
   ''';
 
-  final result = await _query(mutation);
+  final result = await _mutation(mutation);
   return parseAddedComment(result, pr, issue);
 
 }
@@ -414,7 +476,7 @@ Future<List> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async 
       }
     }
     ''';
-    result = await _query(mutationPR);
+    result = await _mutation(mutationPR);
   }
   else {
     print("issue id: " +  id);
@@ -438,7 +500,7 @@ Future<List> addLabel(Issue issue, PullRequest pr, List<String> labelIds) async 
     }
     ''';
     print(mutationIss);
-    result = await _query(mutationIss);
+    result = await _mutation(mutationIss);
     print('issue');
   }
   print(result);

@@ -90,8 +90,9 @@ class IssueListViewState extends State<IssueListView> {
     }
   }
 
-  void _refreshIssueList(bool b) {
+  void _refreshIssueList() {
     issueList = getIssues(widget.repo);
+    rc.loadComplete();
     //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
     // can look into making this better later on
 
@@ -118,8 +119,6 @@ class IssueListViewState extends State<IssueListView> {
         );
       }),
     );
-
-    b = true;
   }
 
   Widget _createIssueListWidget(BuildContext context, List<Issue> issues) {

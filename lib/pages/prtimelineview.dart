@@ -44,8 +44,9 @@ class PRTimelineViewState extends State<PRTimelineView> {
     );
   }
 
-  void _refreshPRTimelineList(bool b) {
+  void _refreshPRTimelineList() {
     prTimelineList = getPRTimeline(widget.pr);
+    rc.loadComplete();
     //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
     // can look into making this better later on
 
@@ -71,7 +72,6 @@ class PRTimelineViewState extends State<PRTimelineView> {
         },
       ),
     );
-    b = true;
   }
 
   Widget _buildPRTimelineList(
@@ -156,10 +156,10 @@ class PRTimelineViewState extends State<PRTimelineView> {
     if (comment != null) {
       addComment(null, widget.pr, comment).then(
         (IssueComment comment) {
-          _refreshPRTimelineList(true);
+          _refreshPRTimelineList();
         },
       );
-      _refreshPRTimelineList(true);
+      _refreshPRTimelineList();
     }
     _textEditingController.clear();
   }
@@ -197,7 +197,7 @@ class PRTimelineViewState extends State<PRTimelineView> {
       // print(labelIds);
       addLabel(null, widget.pr, labelIds).then(
       (List labels) {
-        _refreshPRTimelineList(true);
+        _refreshPRTimelineList();
       });
     }
   }

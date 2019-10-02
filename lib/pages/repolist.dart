@@ -54,8 +54,9 @@ class RepoListViewState extends State<RepoListView> {
         ));
   }
 
-  void _refreshRepoList(bool b) {
+  void _refreshRepoList() {
     repoList = fetchUserRepos();
+    rc.loadComplete();
     //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
     // can look into making this better later on
 
@@ -81,7 +82,6 @@ class RepoListViewState extends State<RepoListView> {
         },
       ),
     );
-    b = true;
   }
 
   Widget _buildRepoList(
@@ -89,7 +89,7 @@ class RepoListViewState extends State<RepoListView> {
     AsyncSnapshot<List<Repository>> snapshot,
   ) {
     if (snapshot.connectionState == ConnectionState.done) {
-      return snapshot.data.length != 0
+      return snapshot.data!= null && snapshot.data.length != 0
           ? _createRepoListWidget(context, snapshot.data)
           : SmartRefresher(
               enablePullDown: true,

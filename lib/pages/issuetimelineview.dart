@@ -116,9 +116,10 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
     );
   }
 
-  void _refreshIssueTimelineList(bool b) {
+  void _refreshIssueTimelineList() {
     setState(() {
       issueTimelineList = getIssueTimeline(widget.issue);
+      rc.loadComplete();
       //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
       // can look into making this better later on
 
@@ -146,7 +147,6 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
               ),
         ),
       );
-      b = true;
     });
   }
 
@@ -154,7 +154,7 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
     if (comment != null) {
       addComment(widget.issue, null, comment).then(
         (IssueComment comment) {
-          _refreshIssueTimelineList(true);
+          _refreshIssueTimelineList();
         },
       );
     }
@@ -190,7 +190,7 @@ class IssueTimelineViewState extends State<IssueTimelineView> {
       // print(labelIds);
       addLabel(widget.issue, null, labelIds).then(
       (List labels) {
-        _refreshIssueTimelineList(true);
+        _refreshIssueTimelineList();
       });
     }
 

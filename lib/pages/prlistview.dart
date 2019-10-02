@@ -105,8 +105,9 @@ class PRListViewState extends State<PRListView> {
     );
   }
 
-  void _refreshPRList(bool b) {
+  void _refreshPRList() {
     prList = getPRs(widget.repo);
+    rc.loadComplete();
     //rc.sendBack(true, RefreshStatus.completed); // makes it break, but works without.
     // can look into making this better later on
 
@@ -133,6 +134,5 @@ class PRListViewState extends State<PRListView> {
         );
       }),
     );
-    b = true;
   }
 }
